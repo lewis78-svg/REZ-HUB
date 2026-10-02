@@ -177,7 +177,7 @@
 
         <p>Interested in our technology training?</p>
 
-        <form id="contactForm">
+        <form action="https://formspree.io/f/moevoraz" method="POST">
 
             <input
                 type="text"
@@ -196,8 +196,15 @@
             <textarea
                 id="message"
                 placeholder="Your Message"
+                rows="6"
                 required
             ></textarea>
+            
+          <input
+        type="hidden"
+        name="subject"
+        value="New Feedback from REZ HUB AND TECHNOLOGIES"
+    >
 
             <button type="submit">
                 Send Message
