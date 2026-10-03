@@ -282,3 +282,20 @@ footer {
         font-size: 25px;
     }
 }
+/* WhatsApp Button */
+.whatsapp-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 25px;
+    background: #25D366;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.whatsapp-button:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+}
