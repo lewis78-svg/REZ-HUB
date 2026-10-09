@@ -1,0 +1,29 @@
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+  authDomain: "rez-hub-technology.firebaseapp.com",
+  projectId: "rez-hub-technology",
+  storageBucket: "rez-hub-technology.firebasestorage.app",
+  messagingSenderId: "700283422991",
+  appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export {
+  auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+};
