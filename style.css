@@ -723,3 +723,116 @@ a {
 a:hover {
     color: #c084fc;
 }
+
+/* =========================================
+   REZ HUB - MOVING NEON TECHNOLOGY BACKGROUND
+   ========================================= */
+
+html {
+    background: #050816;
+}
+
+body {
+    background: #050816;
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+}
+
+/* Moving blue and purple neon lights */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -30%;
+    z-index: -2;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 30%,
+            rgba(0, 217, 255, 0.20),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 80% 60%,
+            rgba(168, 85, 247, 0.22),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 50% 90%,
+            rgba(37, 99, 235, 0.15),
+            transparent 45%
+        );
+
+    background-size: 180% 180%;
+    animation: neonLightMove 16s ease-in-out infinite alternate;
+}
+
+/* Moving futuristic grid */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 217, 255, 0.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 217, 255, 0.08) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+    opacity: 0.45;
+    animation: neonGridMove 18s linear infinite;
+}
+
+/* Light movement */
+@keyframes neonLightMove {
+    0% {
+        background-position: 0% 0%;
+        transform: translate(-2%, -1%) scale(1);
+    }
+
+    50% {
+        background-position: 100% 50%;
+        transform: translate(2%, 2%) scale(1.05);
+    }
+
+    100% {
+        background-position: 0% 100%;
+        transform: translate(-1%, 2%) scale(1);
+    }
+}
+
+/* Grid movement */
+@keyframes neonGridMove {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 45px 45px;
+    }
+}
+
+/* Keep the main content readable */
+header,
+main,
+section,
+footer {
+    position: relative;
+}
+
+/* Keep the background comfortable for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    body::after {
+        animation: none;
+    }
+}
