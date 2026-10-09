@@ -836,3 +836,247 @@ footer {
         animation: none;
     }
 }
+
+/* =====================================
+   REZ HUB - MODERN INTERACTIVE LESSONS
+   ===================================== */
+
+/* Lesson cards layout */
+.lessons,
+.lesson-container,
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, 260px), 1fr)
+    );
+    gap: 25px;
+    padding: 25px 0;
+}
+
+/* Individual lesson cards */
+.lesson,
+.lesson-card,
+.card {
+    position: relative;
+    overflow: hidden;
+    padding: 25px;
+    border-radius: 18px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(14, 25, 52, 0.96),
+        rgba(25, 12, 48, 0.96)
+    );
+
+    border: 1px solid rgba(0, 217, 255, 0.45);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        inset 0 0 15px rgba(0, 217, 255, 0.03);
+
+    color: #f5f7ff;
+
+    transition:
+        transform 0.35s ease,
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
+        background 0.35s ease;
+}
+
+/* Animated neon strip at the top */
+.lesson::before,
+.lesson-card::before,
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 3px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #00d9ff,
+        #a855f7,
+        transparent
+    );
+
+    transition: left 0.5s ease;
+}
+
+.lesson:hover::before,
+.lesson-card:hover::before,
+.card:hover::before {
+    left: 100%;
+}
+
+/* Lift and glow on hover */
+.lesson:hover,
+.lesson-card:hover,
+.card:hover {
+    transform: translateY(-8px) scale(1.015);
+
+    border-color: #00d9ff;
+
+    background: linear-gradient(
+        145deg,
+        rgba(13, 35, 65, 0.98),
+        rgba(39, 17, 65, 0.98)
+    );
+
+    box-shadow:
+        0 12px 35px rgba(0, 217, 255, 0.18),
+        0 0 18px rgba(168, 85, 247, 0.15);
+}
+
+/* Lesson card headings */
+.lesson h2,
+.lesson h3,
+.lesson-card h2,
+.lesson-card h3,
+.card h2,
+.card h3 {
+    color: #00d9ff;
+    margin-bottom: 12px;
+    line-height: 1.35;
+    transition: color 0.3s ease;
+}
+
+.lesson:hover h2,
+.lesson:hover h3,
+.lesson-card:hover h2,
+.lesson-card:hover h3,
+.card:hover h2,
+.card:hover h3 {
+    color: #c084fc;
+}
+
+/* Lesson descriptions */
+.lesson p,
+.lesson-card p,
+.card p {
+    color: #d1d9ed;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+/* Lesson images */
+.lesson img,
+.lesson-card img,
+.card img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 18px;
+
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+
+.lesson:hover img,
+.lesson-card:hover img,
+.card:hover img {
+    transform: scale(1.035);
+    filter: saturate(1.2);
+}
+
+/* Buttons inside cards */
+.lesson a,
+.lesson-card a,
+.card a,
+.lesson button,
+.lesson-card button,
+.card button {
+    display: inline-block;
+    padding: 11px 18px;
+    margin-top: 8px;
+
+    color: #050816;
+    background: linear-gradient(
+        90deg,
+        #00d9ff,
+        #8b5cf6
+    );
+
+    border: none;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        filter 0.25s ease;
+}
+
+.lesson a:hover,
+.lesson-card a:hover,
+.card a:hover,
+.lesson button:hover,
+.lesson-card button:hover,
+.card button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+    filter: brightness(1.12);
+}
+
+/* Keyboard accessibility */
+.lesson a:focus-visible,
+.lesson-card a:focus-visible,
+.card a:focus-visible,
+.lesson button:focus-visible,
+.lesson-card button:focus-visible,
+.card button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+}
+
+/* Smaller screens */
+@media (max-width: 600px) {
+    .lessons,
+    .lesson-container,
+    .card-grid {
+        gap: 16px;
+        padding: 16px 0;
+    }
+
+    .lesson,
+    .lesson-card,
+    .card {
+        padding: 18px;
+    }
+
+    .lesson img,
+    .lesson-card img,
+    .card img {
+        height: 160px;
+    }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .lesson,
+    .lesson-card,
+    .card,
+    .lesson img,
+    .lesson-card img,
+    .card img,
+    .lesson a,
+    .lesson-card a,
+    .card a {
+        transition: none;
+    }
+
+    .lesson:hover,
+    .lesson-card:hover,
+    .card:hover {
+        transform: none;
+    }
+}
