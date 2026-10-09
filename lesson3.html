@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3: Web Security | REZ HUB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <p>Cybersecurity Learning Centre</p>
+</header>
+
+<main class="section">
+    <h2>Lesson 3: Web Security</h2>
+
+    <p>
+        Welcome to Lesson 3! In this lesson, you will learn how websites
+        work, common web security risks, and how developers can protect
+        websites and users.
+    </p>
+
+    <hr>
+
+    <h3>1. What Is Web Security?</h3>
+    <p>
+        Web security is the practice of protecting websites, web
+        applications, servers, and users from unauthorized access,
+        data theft, and other online attacks.
+    </p>
+
+    <h3>2. How Does a Website Work?</h3>
+    <ul>
+        <li><strong>HTML:</strong> Defines the structure and content of a web page.</li>
+        <li><strong>CSS:</strong> Controls the appearance and layout of a web page.</li>
+        <li><strong>JavaScript:</strong> Adds interactivity and dynamic behaviour.</li>
+        <li><strong>Web server:</strong> Delivers website files and processes requests.</li>
+        <li><strong>Database:</strong> Stores information used by an application.</li>
+    </ul>
+
+    <h3>3. Common Web Security Risks</h3>
+
+    <h4>a) Cross-Site Scripting (XSS)</h4>
+    <p>
+        XSS occurs when a website handles untrusted content unsafely,
+        allowing harmful scripts to run in another user's browser.
+    </p>
+    <p><strong>Prevention:</strong> Encode untrusted output, sanitize
+    content when appropriate, and use a suitable Content Security Policy.</p>
+
+    <h4>b) SQL Injection</h4>
+    <p>
+        SQL injection occurs when an application improperly combines
+        untrusted input with database queries.
+    </p>
+    <p><strong>Prevention:</strong> Use parameterized queries, safe database
+    APIs, and least-privilege database accounts.</p>
+
+    <h4>c) Broken Authentication</h4>
+    <p>
+        Weak login systems or poor session handling can allow unauthorized
+        people to access user accounts.
+    </p>
+    <p><strong>Prevention:</strong> Use strong password storage, multi-factor
+    authentication, secure sessions, and login rate limits.</p>
+
+    <h4>d) Broken Access Control</h4>
+    <p>
+        This happens when an application allows users to access information
+        or actions they are not authorized to use.
+    </p>
+    <p><strong>Prevention:</strong> Verify permissions on the server for
+    every protected action and resource.</p>
+
+    <h4>e) Security Misconfiguration</h4>
+    <p>
+        Default passwords, unnecessary services, exposed debug pages,
+        and incorrect server settings can create security weaknesses.
+    </p>
+    <p><strong>Prevention:</strong> Change default credentials, remove
+    unnecessary services, update software, and disable production debugging.</p>
+
+    <h3>4. What Is HTTPS?</h3>
+    <p>
+        HTTPS uses TLS encryption to help protect data exchanged between
+        a browser and a website. It helps prevent others from reading or
+        changing traffic in transit, but it does not guarantee that a
+        website itself is trustworthy.
+    </p>
+
+    <h3>5. How to Protect a Website</h3>
+    <ul>
+        <li>Keep software, frameworks, and plugins updated.</li>
+        <li>Validate input and safely handle untrusted data.</li>
+        <li>Use parameterized database queries.</li>
+        <li>Use HTTPS and secure cookie settings.</li>
+        <li>Apply access controls on the server.</li>
+        <li>Back up important files and test recovery procedures.</li>
+        <li>Monitor logs and investigate suspicious activity.</li>
+        <li>Test only websites and systems you own or have permission to assess.</li>
+    </ul>
+
+    <h3>6. Practical Example</h3>
+    <p>
+        Imagine a school website with a student login page. A secure
+        application checks the student's identity, verifies their
+        permissions on the server, and protects private records from
+        being viewed by other students.
+    </p>
+
+    <p><strong>Remember:</strong> Hiding a button in the browser is not
+    enough to protect a page. The server must also check authorization.</p>
+
+    <hr>
+
+    <h3>7. Quick Quiz</h3>
+
+    <p><strong>Question 1:</strong> What is the main purpose of web security?</p>
+    <details>
+        <summary>Show answer</summary>
+        <p>To protect websites, applications, data, and users from security threats.</p>
+    </details>
+
+    <p><strong>Question 2:</strong> Which technology defines a web page's structure?</p>
+    <details>
+        <summary>Show answer</summary>
+        <p>HTML.</p>
+    </details>
+
+    <p><strong>Question 3:</strong> What helps prevent SQL injection?</p>
+    <details>
+        <summary>Show answer</summary>
+        <p>Parameterized queries and safe database APIs.</p>
+    </details>
+
+    <p><strong>Question 4:</strong> Does HTTPS guarantee that a website is honest?</p>
+    <details>
+        <summary>Show answer</summary>
+        <p>No. HTTPS protects communication, but a fraudulent website can also use HTTPS.</p>
+    </details>
+
+    <p><strong>Question 5:</strong> What must you have before testing another person's website?</p>
+    <details>
+        <summary>Show answer</summary>
+        <p>Permission from the owner.</p>
+    </details>
+
+    <hr>
+
+    <h3>Lesson Summary</h3>
+    <p>
+        You have learned about web technologies, common security risks,
+        HTTPS, and practical ways to protect web applications.
+    </p>
+
+    <p>
+        <a href="index.html">← Back to Home</a>
+        &nbsp; | &nbsp;
+        <a href="lesson2.html">← Previous Lesson</a>
+        &nbsp; | &nbsp;
+        <a href="lesson4.html">Next Lesson →</a>
+    </p>
+</main>
+
+<footer>
+    <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
