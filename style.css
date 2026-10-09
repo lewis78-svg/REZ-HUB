@@ -642,3 +642,84 @@ footer a {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* WHOLE WEBSITE BACKGROUND */
+html {
+    scroll-behavior: smooth;
+    background: #050816;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: #f5f7ff;
+    background: linear-gradient(135deg, #050816, #0b1026, #160a2e);
+    min-height: 100vh;
+}
+
+/* REMOVE GREY SECTION BACKGROUNDS */
+section,
+main,
+.container,
+.content,
+.services,
+.lessons,
+.lesson-container,
+.service-container,
+.card-grid {
+    background-color: transparent;
+    color: #f5f7ff;
+}
+
+/* LESSON AND SERVICE CARDS */
+.lesson,
+.service,
+.card,
+.lesson-card,
+.service-card {
+    background: linear-gradient(145deg, #101a35, #17102d);
+    color: #f5f7ff;
+    border: 1px solid #00d9ff;
+    border-radius: 14px;
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.15);
+    transition: 0.3s ease;
+}
+
+/* NEON HOVER EFFECT */
+.lesson:hover,
+.service:hover,
+.card:hover,
+.lesson-card:hover,
+.service-card:hover {
+    transform: translateY(-6px);
+    border-color: #a855f7;
+    box-shadow: 0 0 22px rgba(0, 217, 255, 0.4);
+}
+
+/* INPUT FIELDS */
+input,
+textarea,
+select {
+    background: #0b1026;
+    color: white;
+    border: 1px solid #00d9ff;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* FOOTER */
+footer {
+    background: #050816;
+    color: #f5f7ff;
+    border-top: 1px solid #00d9ff;
+}
+
+/* LINKS */
+a {
+    color: #00d9ff;
+}
+
+a:hover {
+    color: #c084fc;
+}
