@@ -116,6 +116,102 @@
 
     <hr>
 
+<h3>7. Cookies and Sessions</h3>
+
+<p>Websites often use cookies and sessions to remember information
+between requests.</p>
+
+<ul>
+    <li><strong>Cookies:</strong> Small pieces of information stored
+    by a browser for a website.</li>
+    <li><strong>Sessions:</strong> A way for an application to maintain
+    information about a user's interaction across requests.</li>
+</ul>
+
+<p>Authentication sessions must be protected because someone who steals
+a valid session token may be able to impersonate its user.</p>
+
+<ul>
+    <li>Use HTTPS throughout authenticated sessions.</li>
+    <li>Set appropriate Secure, HttpOnly and SameSite cookie attributes.</li>
+    <li>Regenerate session identifiers after login or privilege changes.</li>
+    <li>Expire sessions appropriately and provide a reliable logout function.</li>
+</ul>
+
+<h3>8. Input Validation and Output Encoding</h3>
+
+<p>Web applications receive information through forms, URLs, APIs and
+other sources. They must treat incoming information as untrusted.</p>
+
+<ul>
+    <li><strong>Input validation:</strong> Check that information matches
+    the expected type, length, format and allowed values.</li>
+    <li><strong>Output encoding:</strong> Represent data safely when
+    displaying it in a particular context, helping prevent unintended
+    code execution.</li>
+    <li><strong>Parameterized queries:</strong> Keep database commands
+    separate from user-supplied values to reduce SQL injection risk.</li>
+</ul>
+
+<p><strong>Example:</strong> A registration form should validate an
+email address, enforce suitable password rules and display errors
+without exposing internal server details.</p>
+
+<h3>9. Authentication and Access Control</h3>
+
+<p>Authentication checks who a user is. Authorization determines what
+that user is allowed to do.</p>
+
+<ul>
+    <li>Store passwords using a suitable, established password-hashing
+    algorithm rather than plain text.</li>
+    <li>Use multi-factor authentication where appropriate.</li>
+    <li>Check permissions on the server for every protected operation.</li>
+    <li>Give each account only the permissions it needs.</li>
+    <li>Apply rate limits and monitoring to sensitive login operations.</li>
+</ul>
+
+<p>Hiding a page link or button in the browser is not sufficient.
+The server must independently enforce access permissions.</p>
+
+<h3>10. HTTPS and Website Configuration</h3>
+
+<ul>
+    <li>Use valid HTTPS certificates and modern TLS configurations.</li>
+    <li>Redirect HTTP traffic to HTTPS where appropriate.</li>
+    <li>Remove default accounts and unnecessary services.</li>
+    <li>Keep frameworks, libraries and server software updated.</li>
+    <li>Never expose secret API keys or database credentials in public code.</li>
+    <li>Keep backups and test that data can be restored.</li>
+</ul>
+
+<h3>11. Website Security Checklist</h3>
+
+<ul>
+    <li>Are all pages using HTTPS?</li>
+    <li>Are login credentials stored securely?</li>
+    <li>Does the server verify permissions?</li>
+    <li>Are user inputs validated and safely displayed?</li>
+    <li>Are errors free from sensitive technical details?</li>
+    <li>Are dependencies updated and backups available?</li>
+</ul>
+
+<h3>12. Practical Activity</h3>
+
+<p>A school portal lets students view examination results. A student
+changes a record identifier in a web address and sees another
+student's results.</p>
+
+<p><strong>Your task:</strong> Identify the security weakness and
+suggest two ways to prevent it.</p>
+
+<details>
+    <summary>Reveal suggested answer</summary>
+    <p>This indicates broken access control. The server should verify
+    that the authenticated user is authorized to view each requested
+    record and should deny unauthorized requests.</p>
+</details>
+
     <h3>7. Quick Quiz</h3>
 
     <p><strong>Question 1:</strong> What is the main purpose of web security?</p>
