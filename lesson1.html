@@ -192,31 +192,12 @@ write down two safe actions you would take.</p>
 </form>
 
 
+
 <script>
-const quiz = document.getElementById("lesson1Quiz");
-const result = document.getElementById("lesson1Result");
-const nextLesson = document.getElementById("nextLessonLink");
-
-function updateNextLesson() {
-    const score = Number(localStorage.getItem("lesson1Score") || 0);
-
-    if (score >= 2) {
-        nextLesson.href = "lesson2.html";
-        nextLesson.style.opacity = "1";
-        nextLesson.style.pointerEvents = "auto";
-        nextLesson.textContent = "Next Lesson →";
-    } else {
-        nextLesson.removeAttribute("href");
-        nextLesson.style.opacity = "0.5";
-        nextLesson.style.pointerEvents = "none";
-        nextLesson.textContent = "Locked: Score 2/3 to continue";
-    }
-}
-
-updateNextLesson();
-
-quiz.addEventListener("submit", function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    const quiz = document.getElementById("lesson1Quiz");
+    const result = document.getElementById("lesson1Result");
+    const nextLesson = document.getElementById("nextLessonLink");
 
     const answers = {
         q1: "B",
@@ -224,39 +205,58 @@ quiz.addEventListener("submit", function(event) {
         q3: "C"
     };
 
-    let score = 0;
-
-    for (const question in answers) {
-        const selected = quiz.querySelector(
-            'input[name="' + question + '"]:checked'
-        );
-
-        if (selected && selected.value === answers[question]) {
-            score++;
+    function updateNextLesson(score) {
+        if (score >= 2) {
+            nextLesson.href = "lesson2.html";
+            nextLesson.style.opacity = "1";
+            nextLesson.style.pointerEvents = "auto";
+            nextLesson.textContent = "Next Lesson →";
+        } else {
+            nextLesson.removeAttribute("href");
+            nextLesson.style.opacity = "0.5";
+            nextLesson.style.pointerEvents = "none";
+            nextLesson.textContent = "Locked: Score 2/3 to continue";
         }
     }
 
-    localStorage.setItem("lesson1Score", score);
+    const savedScore = Number(localStorage.getItem("lesson1Score") || 0);
+    updateNextLesson(savedScore);
 
-    if (score >= 2) {
-        result.textContent =
-            "Congratulations! You scored " + score +
-            "/3. You have passed and can proceed to Lesson 2.";
-    } else {
-        result.textContent =
-            "You scored " + score +
-            "/3. You need at least 2/3 to proceed. Please try again.";
-    }
+    quiz.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    updateNextLesson();
-});
+        let score = 0;
 
-quiz.addEventListener("reset", function() {
-    localStorage.removeItem("lesson1Score");
-    result.textContent = "";
-    setTimeout(updateNextLesson, 0);
+        for (const question in answers) {
+            const selected = quiz.querySelector(
+                'input[name="' + question + '"]:checked'
+            );
+
+            if (selected && selected.value === answers[question]) {
+                score++;
+            }
+        }
+
+        localStorage.setItem("lesson1Score", String(score));
+
+        result.textContent = "Your score: " + score + "/3. " +
+            (score >= 2
+                ? "Congratulations! You passed and can proceed to Lesson 2."
+                : "You need at least 2/3 to proceed. Please try again.");
+
+        updateNextLesson(score);
+    });
+
+    quiz.addEventListener("reset", function () {
+        localStorage.removeItem("lesson1Score");
+        result.textContent = "";
+        setTimeout(function () {
+            updateNextLesson(0);
+        }, 0);
+    });
 });
 </script>
+
 
 
 
