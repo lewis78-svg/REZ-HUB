@@ -191,8 +191,31 @@ write down two safe actions you would take.</p>
 
 </form>
 
+```html
 <script>
-document.getElementById("lesson1Quiz").addEventListener("submit", function(event) {
+const quiz = document.getElementById("lesson1Quiz");
+const result = document.getElementById("lesson1Result");
+const nextLesson = document.getElementById("nextLessonLink");
+
+function updateNextLesson() {
+    const score = Number(localStorage.getItem("lesson1Score") || 0);
+
+    if (score >= 2) {
+        nextLesson.href = "lesson2.html";
+        nextLesson.style.opacity = "1";
+        nextLesson.style.pointerEvents = "auto";
+        nextLesson.textContent = "Next Lesson →";
+    } else {
+        nextLesson.removeAttribute("href");
+        nextLesson.style.opacity = "0.5";
+        nextLesson.style.pointerEvents = "none";
+        nextLesson.textContent = "Locked: Score 2/3 to continue";
+    }
+}
+
+updateNextLesson();
+
+quiz.addEventListener("submit", function(event) {
     event.preventDefault();
 
     const answers = {
@@ -202,10 +225,9 @@ document.getElementById("lesson1Quiz").addEventListener("submit", function(event
     };
 
     let score = 0;
-    const form = event.target;
 
     for (const question in answers) {
-        const selected = form.querySelector(
+        const selected = quiz.querySelector(
             'input[name="' + question + '"]:checked'
         );
 
@@ -214,25 +236,34 @@ document.getElementById("lesson1Quiz").addEventListener("submit", function(event
         }
     }
 
-    const result = document.getElementById("lesson1Result");
+    localStorage.setItem("lesson1Score", score);
 
-    result.textContent =
-        "Your score: " + score + "/3. " +
-        (score === 3
-            ? "Excellent work! You answered all questions correctly."
-            : "Review your answers and click Try Again to retake the quiz.");
+    if (score >= 2) {
+        result.textContent =
+            "Congratulations! You scored " + score +
+            "/3. You have passed and can proceed to Lesson 2.";
+    } else {
+        result.textContent =
+            "You scored " + score +
+            "/3. You need at least 2/3 to proceed. Please try again.";
+    }
+
+    updateNextLesson();
 });
 
-document.getElementById("lesson1Quiz").addEventListener("reset", function() {
-    document.getElementById("lesson1Result").textContent = "";
+quiz.addEventListener("reset", function() {
+    localStorage.removeItem("lesson1Score");
+    result.textContent = "";
+    setTimeout(updateNextLesson, 0);
 });
 </script>
+
 
 
     <p>
         <a href="index.html">← Back to Home</a>
         &nbsp; | &nbsp;
-        <a href="lesson2.html">Next Lesson →</a>
+      <a href="lesson2.html" id="nextLessonLink">Next Lesson →</a>
     </p>
 </main>
 
