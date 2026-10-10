@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Progress | REZ HUB</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .progress-container {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .progress-card {
+            background: #fff;
+            color: #222;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #777;
+        }
+
+        .progress-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .passed {
+            border-left-color: #16803c;
+        }
+
+        .not-passed {
+            border-left-color: #c0392b;
+        }
+
+        .score {
+            font-weight: bold;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 22px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #16803c;
+            transition: width 0.4s;
+        }
+
+        .dashboard-link {
+            display: inline-block;
+            padding: 10px 16px;
+            margin: 8px 5px 8px 0;
+            background: #271119;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .dashboard-button {
+            padding: 10px 16px;
+            margin: 8px 5px 8px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <p>Cybersecurity Learning Centre</p>
+</header>
+
+<main class="section progress-container">
+
+    <h2>Student Progress Dashboard</h2>
+
+    <p>Track your results in the four introductory cybersecurity lessons.</p>
+
+    <h3 id="overallProgress">Course progress: 0%</h3>
+
+    <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="Course completion"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        id="progressTrack"
+    >
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <p id="passedCount">Lessons passed: 0 out of 4</p>
+
+    <div id="lessonCards"></div>
+
+    <div id="certificateArea"></div>
+
+    <button type="button" class="dashboard-button" id="refreshButton">
+        Refresh Progress
+    </button>
+
+    <a href="index.html" class="dashboard-link">Back to Home</a>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const lessons = [
+        {
+            title: "Lesson 1: Introduction to Cybersecurity",
+            scoreKey: "lesson1Score",
+            link: "lesson1.html"
+        },
+        {
+            title: "Lesson 2: Networking Fundamentals",
+            scoreKey: "lesson2Score",
+            link: "lesson2.html"
+        },
+        {
+            title: "Lesson 3: Web Security",
+            scoreKey: "lesson3Score",
+            link: "lesson3.html"
+        },
+        {
+            title: "Lesson 4: Ethical Penetration Testing",
+            scoreKey: "lesson4Score",
+            link: "lesson4.html"
+        }
+    ];
+
+    const lessonCards = document.getElementById("lessonCards");
+    const overallProgress = document.getElementById("overallProgress");
+    const passedCount = document.getElementById("passedCount");
+    const progressFill = document.getElementById("progressFill");
+    const progressTrack = document.getElementById("progressTrack");
+    const certificateArea = document.getElementById("certificateArea");
+
+    function showProgress() {
+        lessonCards.replaceChildren();
+        certificateArea.replaceChildren();
+
+        let passed = 0;
+
+        lessons.forEach(function (lesson, index) {
+            const storedScore = localStorage.getItem(lesson.scoreKey);
+            const score = storedScore === null ? null : Number(storedScore);
+            const validScore = score !== null &&
+                Number.isFinite(score) &&
+                score >= 0 &&
+                score <= 3;
+
+            const hasPassed = validScore && score >= 2;
+
+            if (hasPassed) {
+                passed++;
+            }
+
+            const card = document.createElement("div");
+            card.className = "progress-card " +
+                (hasPassed ? "passed" : "not-passed");
+
+            const heading = document.createElement("h3");
+            heading.textContent = lesson.title;
+
+            const scoreText = document.createElement("p");
+            scoreText.className = "score";
+            scoreText.textContent = "Score: " +
+                (validScore ? score + "/3" : "Not completed");
+
+            const status = document.createElement("p");
+            status.textContent = hasPassed
+                ? "PASSED — You may proceed."
+                : "NOT PASSED — Score at least 2/3 to pass.";
+
+            const link = document.createElement("a");
+            link.href = lesson.link;
+            link.className = "dashboard-link";
+            link.textContent = hasPassed
+                ? "Review Lesson"
+                : "Open Lesson";
+
+            card.append(heading, scoreText, status, link);
+            lessonCards.appendChild(card);
+        });
+
+        const percentage = Math.round((passed / lessons.length) * 100);
+
+        overallProgress.textContent = "Course progress: " + percentage + "%";
+        passedCount.textContent = "Lessons passed: " +
+            passed + " out of " + lessons.length;
+
+        progressFill.style.width = percentage + "%";
+        progressTrack.setAttribute("aria-valuenow", String(percentage));
+
+        if (passed === lessons.length) {
+            const message = document.createElement("p");
+            message.textContent =
+                "Congratulations! You have passed all four lessons.";
+            certificateArea.appendChild(message);
+
+            const certificateLink = document.createElement("a");
+            certificateLink.href = "certificate.html";
+            certificateLink.className = "dashboard-link";
+            certificateLink.textContent = "View Course Certificate";
+            certificateArea.appendChild(certificateLink);
+        } else {
+            const message = document.createElement("p");
+            message.textContent =
+                "Pass all four quizzes with at least 2/3 in each lesson to unlock your certificate.";
+            certificateArea.appendChild(message);
+        }
+    }
+
+    document.getElementById("refreshButton").addEventListener(
+        "click",
+        showProgress
+    );
+
+    showProgress();
+});
+</script>
+
+</body>
+</html>
