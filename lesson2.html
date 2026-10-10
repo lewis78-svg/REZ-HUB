@@ -202,35 +202,39 @@ three checks you would perform before asking for technical support.</p>
 
     <h3>10. Quick Quiz</h3>
 
-    <p><strong>Question 1:</strong> What does LAN stand for?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Local Area Network.</p>
-    </details>
+    
+<h3>Quick Quiz</h3>
 
-    <p><strong>Question 2:</strong> Which port is commonly used for HTTPS?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Port 443.</p>
-    </details>
+<p>Answer all three questions. You need at least 2/3 to unlock Lesson 3.</p>
 
-    <p><strong>Question 3:</strong> What is the purpose of a router?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>A router forwards data between different networks.</p>
-    </details>
+<form id="lesson2Quiz" class="interactive-quiz">
 
-    <p><strong>Question 4:</strong> What does DNS do?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>DNS helps translate domain names into information such as IP addresses.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 1:</strong> What does LAN stand for?</p>
+        <label><input type="radio" name="q1" value="A" required> Large Access Network</label><br>
+        <label><input type="radio" name="q1" value="B"> Local Area Network</label><br>
+        <label><input type="radio" name="q1" value="C"> Linked Application Node</label>
+    </div>
 
-    <p><strong>Question 5:</strong> What should you have before testing someone else's network?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Permission from the network owner.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 2:</strong> Which port is commonly used for HTTPS?</p>
+        <label><input type="radio" name="q2" value="A" required> Port 21</label><br>
+        <label><input type="radio" name="q2" value="B"> Port 80</label><br>
+        <label><input type="radio" name="q2" value="C"> Port 443</label>
+    </div>
+
+    <div class="quiz-question">
+        <p><strong>Question 3:</strong> What is the purpose of a router?</p>
+        <label><input type="radio" name="q3" value="A" required> To forward data between networks</label><br>
+        <label><input type="radio" name="q3" value="B"> To create strong passwords</label><br>
+        <label><input type="radio" name="q3" value="C"> To remove all computer viruses</label>
+    </div>
+
+    <button type="submit">Submit Answers</button>
+    <button type="reset">Try Again</button>
+
+    <p id="lesson2Result" aria-live="polite"></p>
+</form>
 
     <hr>
 
@@ -246,7 +250,7 @@ three checks you would perform before asking for technical support.</p>
         &nbsp; | &nbsp;
         <a href="lesson1.html">← Previous Lesson</a>
         &nbsp; | &nbsp;
-        <a href="lesson3.html">Next Lesson →</a>
+      <a href="lesson3.html" id="nextLessonLink">Next Lesson →</a>
     </p>
 
 </main>
@@ -255,10 +259,77 @@ three checks you would perform before asking for technical support.</p>
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 <script>
-if (Number(localStorage.getItem("lesson1Score") || 0) < 2) {
-    alert("You must score at least 2 out of 3 in Lesson 1 before proceeding.");
-    window.location.replace("lesson1.html");
-}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Require a passing Lesson 1 score before entering Lesson 2.
+    if (Number(localStorage.getItem("lesson1Score") || 0) < 2) {
+        alert("You must score at least 2 out of 3 in Lesson 1 before proceeding.");
+        window.location.replace("lesson1.html");
+        return;
+    }
+
+    const quiz = document.getElementById("lesson2Quiz");
+    const result = document.getElementById("lesson2Result");
+    const nextLesson = document.getElementById("nextLessonLink");
+
+    function updateNextLesson(score) {
+        if (score >= 2) {
+            nextLesson.href = "lesson3.html";
+            nextLesson.style.opacity = "1";
+            nextLesson.style.pointerEvents = "auto";
+            nextLesson.textContent = "Next Lesson →";
+        } else {
+            nextLesson.removeAttribute("href");
+            nextLesson.style.opacity = "0.5";
+            nextLesson.style.pointerEvents = "none";
+            nextLesson.textContent = "Locked: Score 2/3 to continue";
+        }
+    }
+
+    const savedScore = Number(localStorage.getItem("lesson2Score") || 0);
+    updateNextLesson(savedScore);
+
+    quiz.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const answers = {
+            q1: "B",
+            q2: "C",
+            q3: "A"
+        };
+
+        let score = 0;
+
+        for (const question in answers) {
+            const selected = quiz.querySelector(
+                'input[name="' + question + '"]:checked'
+            );
+
+            if (selected && selected.value === answers[question]) {
+                score++;
+            }
+        }
+
+        localStorage.setItem("lesson2Score", String(score));
+
+        result.textContent = "Your score: " + score + "/3. " +
+            (score >= 2
+                ? "Congratulations! You passed and can proceed to Lesson 3."
+                : "You need at least 2/3 to proceed. Please try again.");
+
+        updateNextLesson(score);
+    });
+
+    quiz.addEventListener("reset", function () {
+        localStorage.removeItem("lesson2Score");
+        result.textContent = "";
+        setTimeout(function () {
+            updateNextLesson(0);
+        }, 0);
+    });
+});
+
 </script>
 </body>
 </html>
