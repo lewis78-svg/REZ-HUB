@@ -124,6 +124,106 @@
 
     <hr>
 
+<h3>8. Defining the Testing Scope</h3>
+
+<p>The scope describes exactly which systems and activities are
+approved for a penetration test.</p>
+
+<p>A written authorization and scope should identify:</p>
+
+<ul>
+    <li>The systems, domains or IP addresses included.</li>
+    <li>The testing methods that are allowed and prohibited.</li>
+    <li>The approved dates and testing hours.</li>
+    <li>The contact person for emergencies.</li>
+    <li>Rules for protecting data and avoiding service disruption.</li>
+    <li>How findings should be reported and stored.</li>
+</ul>
+
+<p>Never assume permission for one system automatically grants
+permission to test other systems connected to it.</p>
+
+<h3>9. Understanding Risk Severity</h3>
+
+<p>Not every vulnerability has the same level of risk. A tester considers
+the likelihood of exploitation and the potential impact.</p>
+
+<ul>
+    <li><strong>Critical:</strong> A severe weakness that may cause
+    major compromise of important systems or data.</li>
+    <li><strong>High:</strong> A weakness with substantial potential
+    impact that requires prompt attention.</li>
+    <li><strong>Medium:</strong> A weakness with meaningful but more
+    limited impact or exploitation conditions.</li>
+    <li><strong>Low:</strong> A weakness with limited impact.</li>
+    <li><strong>Informational:</strong> An observation or improvement
+    that may not represent a direct vulnerability.</li>
+</ul>
+
+<p>Use the organization's agreed rating method. A severity label
+should be supported by evidence and context.</p>
+
+<h3>10. Collecting Evidence Safely</h3>
+
+<p>Evidence helps explain and verify a security finding. Collect only
+what is necessary and permitted.</p>
+
+<ul>
+    <li>Record the affected system and the time of the observation.</li>
+    <li>Document the steps needed to reproduce the finding safely.</li>
+    <li>Capture relevant screenshots or logs when authorized.</li>
+    <li>Redact passwords, personal details and other sensitive information.</li>
+    <li>Store evidence securely and restrict access to authorized people.</li>
+    <li>Avoid accessing, copying or changing unrelated private data.</li>
+</ul>
+
+<h3>11. Writing a Professional Security Report</h3>
+
+<p>A useful report explains what was found, why it matters and how
+the organization can fix it.</p>
+
+<ol>
+    <li><strong>Title:</strong> A short description of the finding.</li>
+    <li><strong>Summary:</strong> Explain the weakness in plain language.</li>
+    <li><strong>Affected asset:</strong> Identify the approved system involved.</li>
+    <li><strong>Severity:</strong> State the rating and its justification.</li>
+    <li><strong>Evidence:</strong> Include safe, relevant supporting details.</li>
+    <li><strong>Impact:</strong> Describe the realistic consequences.</li>
+    <li><strong>Remediation:</strong> Recommend specific corrective actions.</li>
+    <li><strong>Retest:</strong> Record whether the fix was verified.</li>
+</ol>
+
+<h3>12. Remediation and Retesting</h3>
+
+<p>After a finding is reported, the system owner should prioritize
+and implement an appropriate fix.</p>
+
+<ul>
+    <li>Address the underlying cause, not only the visible symptom.</li>
+    <li>Test changes in a suitable environment before deployment.</li>
+    <li>Check that the fix does not introduce new problems.</li>
+    <li>Retest only within the approved scope.</li>
+    <li>Document the result and close the finding when appropriate.</li>
+</ul>
+
+<h3>13. Practical Activity</h3>
+
+<p>During an authorized assessment of a training website, you discover
+that a test account can access a record belonging to another user.</p>
+
+<p><strong>Your task:</strong> Write a short report containing the
+finding, potential impact and recommended fix.</p>
+
+<details>
+    <summary>Reveal a sample answer</summary>
+    <p><strong>Finding:</strong> Broken access control in record viewing.</p>
+    <p><strong>Impact:</strong> Users may be able to view records they
+    are not authorized to access.</p>
+    <p><strong>Recommendation:</strong> Enforce server-side authorization
+    for every record request and add tests to verify that users cannot
+    access other users' records.</p>
+</details>
+
     <h3>8. Quick Quiz</h3>
 
     <p><strong>Question 1:</strong> What makes penetration testing ethical?</p>
