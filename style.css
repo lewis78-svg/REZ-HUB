@@ -1558,3 +1558,106 @@ footer {
         height: auto;
     }
 }
+
+/* ===== REZ HUB CYBER NEON THEME ===== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #070b1b;
+    color: #f1f5ff;
+}
+
+/* Headings and paragraphs */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+}
+
+p, li, label {
+    color: #d5def5;
+}
+
+/* Main sections and content cards */
+section,
+.section,
+.card,
+.lesson-card,
+.service-card,
+.content-card {
+    background-color: #0d1530;
+    color: #f1f5ff;
+    border-color: #25366b;
+}
+
+/* Navigation and header */
+header {
+    background-color: #090d20;
+    color: #ffffff;
+}
+
+nav a {
+    color: #65d9ff;
+}
+
+nav a:hover {
+    color: #c084fc;
+}
+
+/* Links */
+a {
+    color: #65d9ff;
+}
+
+a:hover {
+    color: #c084fc;
+}
+
+/* Buttons */
+button,
+.btn,
+.button {
+    background-color: #1769ff;
+    color: #ffffff;
+    border: 1px solid #65d9ff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover,
+.btn:hover,
+.button:hover {
+    background-color: #743bdb;
+}
+
+/* Quiz forms and answer choices */
+form,
+fieldset {
+    color: #f1f5ff;
+}
+
+input,
+textarea,
+select {
+    background-color: #111b38;
+    color: #ffffff;
+    border: 1px solid #5269a8;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    accent-color: #65d9ff;
+}
+
+/* Footer */
+footer {
+    background-color: #090d20;
+    color: #d5def5;
+    border-top: 1px solid #25366b;
+}
+
+/* Images fit their containers */
+img {
+    max-width: 100%;
+}
