@@ -212,37 +212,40 @@ suggest two ways to prevent it.</p>
     record and should deny unauthorized requests.</p>
 </details>
 
-    <h3>7. Quick Quiz</h3>
+    ```html
+<h3>13. Quick Quiz</h3>
 
-    <p><strong>Question 1:</strong> What is the main purpose of web security?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>To protect websites, applications, data, and users from security threats.</p>
-    </details>
+<p>Answer all three questions. You need at least 2/3 to unlock Lesson 4.</p>
 
-    <p><strong>Question 2:</strong> Which technology defines a web page's structure?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>HTML.</p>
-    </details>
+<form id="lesson3Quiz" class="interactive-quiz">
 
-    <p><strong>Question 3:</strong> What helps prevent SQL injection?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Parameterized queries and safe database APIs.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 1:</strong> What is the main purpose of web security?</p>
+        <label><input type="radio" name="q1" value="A" required> To make websites colourful</label><br>
+        <label><input type="radio" name="q1" value="B"> To protect websites, data and users</label><br>
+        <label><input type="radio" name="q1" value="C"> To increase screen brightness</label>
+    </div>
 
-    <p><strong>Question 4:</strong> Does HTTPS guarantee that a website is honest?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>No. HTTPS protects communication, but a fraudulent website can also use HTTPS.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 2:</strong> Which technology defines a web page's structure?</p>
+        <label><input type="radio" name="q2" value="A" required> CSS</label><br>
+        <label><input type="radio" name="q2" value="B"> JavaScript</label><br>
+        <label><input type="radio" name="q2" value="C"> HTML</label>
+    </div>
 
-    <p><strong>Question 5:</strong> What must you have before testing another person's website?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Permission from the owner.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 3:</strong> What helps prevent SQL injection?</p>
+        <label><input type="radio" name="q3" value="A" required> Parameterized queries</label><br>
+        <label><input type="radio" name="q3" value="B"> Sharing database passwords</label><br>
+        <label><input type="radio" name="q3" value="C"> Disabling all user accounts</label>
+    </div>
+
+    <button type="submit">Submit Answers</button>
+    <button type="reset">Try Again</button>
+
+    <p id="lesson3Result" aria-live="polite"></p>
+</form>
+
 
     <hr>
 
@@ -257,7 +260,7 @@ suggest two ways to prevent it.</p>
         &nbsp; | &nbsp;
         <a href="lesson2.html">← Previous Lesson</a>
         &nbsp; | &nbsp;
-        <a href="lesson4.html">Next Lesson →</a>
+      <a href="lesson4.html" id="nextLessonLink">Next Lesson →</a>
     </p>
 </main>
 
@@ -265,5 +268,81 @@ suggest two ways to prevent it.</p>
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 
+```html
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Require a passing Lesson 2 score before entering Lesson 3.
+    if (Number(localStorage.getItem("lesson2Score") || 0) < 2) {
+        alert("You must score at least 2 out of 3 in Lesson 2 before proceeding.");
+        window.location.replace("lesson2.html");
+        return;
+    }
+
+    const quiz = document.getElementById("lesson3Quiz");
+    const result = document.getElementById("lesson3Result");
+    const nextLesson = document.getElementById("nextLessonLink");
+
+    const answers = {
+        q1: "B",
+        q2: "C",
+        q3: "A"
+    };
+
+    function updateNextLesson(score) {
+        if (score >= 2) {
+            nextLesson.href = "lesson4.html";
+            nextLesson.style.opacity = "1";
+            nextLesson.style.pointerEvents = "auto";
+            nextLesson.textContent = "Next Lesson →";
+        } else {
+            nextLesson.removeAttribute("href");
+            nextLesson.style.opacity = "0.5";
+            nextLesson.style.pointerEvents = "none";
+            nextLesson.textContent = "Locked: Score 2/3 to continue";
+        }
+    }
+
+    const savedScore = Number(localStorage.getItem("lesson3Score") || 0);
+    updateNextLesson(savedScore);
+
+    quiz.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let score = 0;
+
+        for (const question in answers) {
+            const selected = quiz.querySelector(
+                'input[name="' + question + '"]:checked'
+            );
+
+            if (selected && selected.value === answers[question]) {
+                score++;
+            }
+        }
+
+        localStorage.setItem("lesson3Score", String(score));
+
+        result.textContent = "Your score: " + score + "/3. " +
+            (score >= 2
+                ? "Congratulations! You passed and can proceed to Lesson 4."
+                : "You need at least 2/3 to proceed. Please try again.");
+
+        updateNextLesson(score);
+    });
+
+    quiz.addEventListener("reset", function () {
+        localStorage.removeItem("lesson3Score");
+        result.textContent = "";
+
+        setTimeout(function () {
+            updateNextLesson(0);
+        }, 0);
+    });
+
+});
+</script>
+
 </body>
 </html>
+
