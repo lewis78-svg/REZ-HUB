@@ -254,6 +254,11 @@ three checks you would perform before asking for technical support.</p>
 <footer>
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
-
+<script>
+if (Number(localStorage.getItem("lesson1Score") || 0) < 2) {
+    alert("You must score at least 2 out of 3 in Lesson 1 before proceeding.");
+    window.location.replace("lesson1.html");
+}
+</script>
 </body>
 </html>
