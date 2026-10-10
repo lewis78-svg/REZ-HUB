@@ -1522,3 +1522,39 @@ footer {
         height: auto;
     }
 }
+
+/* ENLARGE REZ HUB LOGO */
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.navbar .logo-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.navbar .logo-image {
+    display: block;
+    width: 280px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Keep space for the hamburger menu on mobile */
+@media (max-width: 768px) {
+    .navbar .logo {
+        flex: 1 1 auto;
+        max-width: calc(100% - 65px);
+    }
+
+    .navbar .logo-image {
+        width: 230px;
+        max-width: 100%;
+        height: auto;
+    }
+}
