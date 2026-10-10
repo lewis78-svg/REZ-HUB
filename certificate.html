@@ -1,0 +1,258 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Certificate | REZ HUB AND TECHNOLOGY</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .certificate-container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .certificate {
+            background: #fff;
+            color: #222;
+            border: 10px double #271119;
+            outline: 3px solid #d4af37;
+            outline-offset: -20px;
+            padding: 55px 35px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        .certificate h1 {
+            color: #271119;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .certificate h2 {
+            color: #9b7625;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+
+        .student-name {
+            display: block;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: none;
+            border-bottom: 2px solid #9b7625;
+            font-size: 26px;
+            text-align: center;
+            color: #271119;
+            background: transparent;
+        }
+
+        .certificate p {
+            margin: 12px 0;
+            line-height: 1.7;
+        }
+
+        .certificate-actions {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .certificate-actions button,
+        .certificate-actions a {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 20px;
+            background: #271119;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .certificate-message {
+            text-align: center;
+            margin: 20px 0;
+            color: #fff;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            header, footer, .certificate-actions,
+            .certificate-message, .certificate-container > h2,
+            .certificate-container > p {
+                display: none !important;
+            }
+
+            .certificate-container {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .certificate {
+                box-shadow: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                break-inside: avoid;
+            }
+
+            @page {
+                size: landscape;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <p>Cybersecurity Learning Centre</p>
+</header>
+
+<main class="certificate-container">
+
+    <h2>Course Completion Certificate</h2>
+
+    <p class="certificate-message" id="statusMessage">
+        Checking your course results...
+    </p>
+
+    <div class="certificate" id="certificateContent" hidden>
+        <h1>REZ HUB AND TECHNOLOGY</h1>
+
+        <p>CYBERSECURITY LEARNING CENTRE</p>
+
+        <h2>CERTIFICATE OF COMPLETION</h2>
+
+        <p>This certificate is proudly presented to</p>
+
+        <input
+            type="text"
+            id="studentName"
+            class="student-name"
+            placeholder="Enter Student's Full Name"
+            maxlength="80"
+            aria-label="Student's full name"
+            required
+        >
+
+        <p>
+            for successfully completing the four introductory lessons
+            in the REZ HUB AND TECHNOLOGY Cybersecurity Learning Centre.
+        </p>
+
+        <p>
+            The student has achieved the required passing score in
+            all four lesson quizzes.
+        </p>
+
+        <p><strong>Course:</strong> Introduction to Cybersecurity</p>
+
+        <p>
+            <strong>Date of Issue:</strong>
+            <span id="issueDate"></span>
+        </p>
+
+        <p>Keep learning. Stay ethical. Protect the digital world.</p>
+
+        <p><strong>REZ HUB AND TECHNOLOGY</strong></p>
+    </div>
+
+    <div class="certificate-actions" id="certificateActions" hidden>
+        <button type="button" id="printButton">Print Certificate</button>
+        <a href="index.html">Back to Home</a>
+    </div>
+
+    <p class="certificate-message">
+        <a href="lesson1.html">Return to Lesson 1</a>
+    </p>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const requiredLessons = [
+        "lesson1Score",
+        "lesson2Score",
+        "lesson3Score",
+        "lesson4Score"
+    ];
+
+    const statusMessage = document.getElementById("statusMessage");
+    const certificateContent = document.getElementById("certificateContent");
+    const certificateActions = document.getElementById("certificateActions");
+    const studentName = document.getElementById("studentName");
+    const printButton = document.getElementById("printButton");
+
+    const allPassed = requiredLessons.every(function (key) {
+        const score = Number(localStorage.getItem(key));
+        return localStorage.getItem(key) !== null &&
+               Number.isFinite(score) &&
+               score >= 2 &&
+               score <= 3;
+    });
+
+    if (!allPassed) {
+        statusMessage.textContent =
+            "Certificate locked. You must pass all four lesson quizzes with at least 2/3 in each lesson.";
+
+        const missingLessons = requiredLessons
+            .map(function (key, index) {
+                const score = Number(localStorage.getItem(key));
+                const valid = localStorage.getItem(key) !== null &&
+                              Number.isFinite(score) &&
+                              score >= 2 &&
+                              score <= 3;
+
+                return valid ? null : "Lesson " + (index + 1);
+            })
+            .filter(Boolean);
+
+        statusMessage.textContent +=
+            " Complete or retake: " + missingLessons.join(", ") + ".";
+
+        return;
+    }
+
+    statusMessage.textContent =
+        "Congratulations! You have passed all four lessons.";
+
+    certificateContent.hidden = false;
+    certificateActions.hidden = false;
+
+    document.getElementById("issueDate").textContent =
+        new Date().toLocaleDateString();
+
+    studentName.addEventListener("input", function () {
+        studentName.value = studentName.value.replace(/[<>]/g, "");
+    });
+
+    printButton.addEventListener("click", function () {
+        if (!studentName.value.trim()) {
+            alert("Please enter your full name before printing your certificate.");
+            studentName.focus();
+            return;
+        }
+
+        window.print();
+    });
+});
+</script>
+
+</body>
+</html>
