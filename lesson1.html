@@ -122,28 +122,112 @@ write down two safe actions you would take.</p>
     or pay. Verify the claim independently and report the message.</p>
 </details>
 
-    <h3>5. Quick Quiz</h3>
-    <p><strong>Question 1:</strong> What is the main purpose of cybersecurity?</p>
-    <p>A. To damage computers</p>
-    <p>B. To protect systems and information</p>
-    <p>C. To steal passwords</p>
+    ```html
+<h3>5. Quick Quiz</h3>
 
-    <details>
-        <summary>Reveal the answer</summary>
-        <p><strong>Correct answer: B.</strong> To protect systems and information.</p>
-    </details>
+<form class="interactive-quiz" id="lesson1Quiz">
 
-    <p><strong>Question 2:</strong> What should you do before testing someone else's system?</p>
-    <details>
-        <summary>Reveal the answer</summary>
-        <p>Obtain explicit authorization from the system owner.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 1:</strong> What is the main purpose of cybersecurity?</p>
 
-    <p><strong>Question 3:</strong> Name one way to protect an online account.</p>
-    <details>
-        <summary>Reveal the answer</summary>
-        <p>Use a strong, unique password and enable two-factor authentication.</p>
-    </details>
+        <label>
+            <input type="radio" name="q1" value="A" required>
+            A. To damage computers
+        </label><br>
+
+        <label>
+            <input type="radio" name="q1" value="B">
+            B. To protect systems and information
+        </label><br>
+
+        <label>
+            <input type="radio" name="q1" value="C">
+            C. To steal passwords
+        </label>
+    </div>
+
+    <div class="quiz-question">
+        <p><strong>Question 2:</strong> What should you do before testing someone else's system?</p>
+
+        <label>
+            <input type="radio" name="q2" value="A" required>
+            A. Obtain permission from the system owner
+        </label><br>
+
+        <label>
+            <input type="radio" name="q2" value="B">
+            B. Start testing without asking
+        </label><br>
+
+        <label>
+            <input type="radio" name="q2" value="C">
+            C. Guess the owner's password
+        </label>
+    </div>
+
+    <div class="quiz-question">
+        <p><strong>Question 3:</strong> Which is a good way to protect an online account?</p>
+
+        <label>
+            <input type="radio" name="q3" value="A" required>
+            A. Share your password with everyone
+        </label><br>
+
+        <label>
+            <input type="radio" name="q3" value="B">
+            B. Use the same simple password everywhere
+        </label><br>
+
+        <label>
+            <input type="radio" name="q3" value="C">
+            C. Use a strong, unique password and two-factor authentication
+        </label>
+    </div>
+
+    <button type="submit">Submit Answers</button>
+    <button type="reset">Try Again</button>
+
+    <p id="lesson1Result" aria-live="polite"></p>
+
+</form>
+
+<script>
+document.getElementById("lesson1Quiz").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const answers = {
+        q1: "B",
+        q2: "A",
+        q3: "C"
+    };
+
+    let score = 0;
+    const form = event.target;
+
+    for (const question in answers) {
+        const selected = form.querySelector(
+            'input[name="' + question + '"]:checked'
+        );
+
+        if (selected && selected.value === answers[question]) {
+            score++;
+        }
+    }
+
+    const result = document.getElementById("lesson1Result");
+
+    result.textContent =
+        "Your score: " + score + "/3. " +
+        (score === 3
+            ? "Excellent work! You answered all questions correctly."
+            : "Review your answers and click Try Again to retake the quiz.");
+});
+
+document.getElementById("lesson1Quiz").addEventListener("reset", function() {
+    document.getElementById("lesson1Result").textContent = "";
+});
+</script>
+
 
     <p>
         <a href="index.html">← Back to Home</a>
