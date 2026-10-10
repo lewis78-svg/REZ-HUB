@@ -224,37 +224,46 @@ finding, potential impact and recommended fix.</p>
     access other users' records.</p>
 </details>
 
-    <h3>8. Quick Quiz</h3>
+   
+<h3>14. Quick Quiz</h3>
 
-    <p><strong>Question 1:</strong> What makes penetration testing ethical?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Explicit authorization, an agreed scope, safe methods, and responsible reporting.</p>
-    </details>
+<p>Answer all three questions. You need at least 2/3 to complete the course.</p>
 
-    <p><strong>Question 2:</strong> Which testing type starts with little or no internal knowledge?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Black-box testing.</p>
-    </details>
+<form id="lesson4Quiz" class="interactive-quiz">
 
-    <p><strong>Question 3:</strong> Why is a report important?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>It documents weaknesses, their impact, and recommendations for fixing them.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 1:</strong> What makes penetration testing ethical?</p>
+        <label><input type="radio" name="q1" value="A" required> Testing any website without permission</label><br>
+        <label><input type="radio" name="q1" value="B"> Authorization and an agreed testing scope</label><br>
+        <label><input type="radio" name="q1" value="C"> Hiding findings from the owner</label>
+    </div>
 
-    <p><strong>Question 4:</strong> Where should beginners practise their skills?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>In authorized training labs or systems they own and are permitted to test.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 2:</strong> Which testing type starts with little or no internal knowledge?</p>
+        <label><input type="radio" name="q2" value="A" required> White-box testing</label><br>
+        <label><input type="radio" name="q2" value="B"> Gray-box testing</label><br>
+        <label><input type="radio" name="q2" value="C"> Black-box testing</label>
+    </div>
 
-    <p><strong>Question 5:</strong> What should happen after vulnerabilities are fixed?</p>
-    <details>
-        <summary>Show answer</summary>
-        <p>Authorized retesting can verify whether the fixes are effective.</p>
-    </details>
+    <div class="quiz-question">
+        <p><strong>Question 3:</strong> What should a professional security report include?</p>
+        <label><input type="radio" name="q3" value="A" required> Findings, impact and recommended fixes</label><br>
+        <label><input type="radio" name="q3" value="B"> Only the tester's name</label><br>
+        <label><input type="radio" name="q3" value="C"> Other users' passwords</label>
+    </div>
+
+    <button type="submit">Submit Answers</button>
+    <button type="reset">Try Again</button>
+
+    <p id="lesson4Result" aria-live="polite"></p>
+</form>
+
+<p>
+    <a href="certificate.html" id="certificateLink"
+       style="opacity: 0.5; pointer-events: none;">
+        Locked: Pass Lesson 4 to earn your certificate
+    </a>
+</p>
 
     <hr>
 
@@ -283,5 +292,82 @@ finding, potential impact and recommended fix.</p>
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Students must pass Lesson 3 before entering Lesson 4.
+    if (Number(localStorage.getItem("lesson3Score") || 0) < 2) {
+        alert("You must score at least 2 out of 3 in Lesson 3 first.");
+        window.location.replace("lesson3.html");
+        return;
+    }
+
+    const quiz = document.getElementById("lesson4Quiz");
+    const result = document.getElementById("lesson4Result");
+    const certificateLink = document.getElementById("certificateLink");
+
+    const answers = {
+        q1: "B",
+        q2: "C",
+        q3: "A"
+    };
+
+    function updateCertificate(score) {
+        if (score >= 2) {
+            certificateLink.href = "certificate.html";
+            certificateLink.style.opacity = "1";
+            certificateLink.style.pointerEvents = "auto";
+            certificateLink.textContent = "🎓 Get Your Course Certificate";
+        } else {
+            certificateLink.removeAttribute("href");
+            certificateLink.style.opacity = "0.5";
+            certificateLink.style.pointerEvents = "none";
+            certificateLink.textContent =
+                "Locked: Pass Lesson 4 to earn your certificate";
+        }
+    }
+
+    const savedScore = Number(localStorage.getItem("lesson4Score") || 0);
+    updateCertificate(savedScore);
+
+    quiz.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let score = 0;
+
+        for (const question in answers) {
+            const selected = quiz.querySelector(
+                'input[name="' + question + '"]:checked'
+            );
+
+            if (selected && selected.value === answers[question]) {
+                score++;
+            }
+        }
+
+        localStorage.setItem("lesson4Score", String(score));
+
+        result.textContent = "Your score: " + score + "/3. " +
+            (score >= 2
+                ? "Congratulations! You have completed all four lessons. Your certificate is unlocked."
+                : "You need at least 2/3 to pass. Please try again.");
+
+        updateCertificate(score);
+    });
+
+    quiz.addEventListener("reset", function () {
+        localStorage.removeItem("lesson4Score");
+        result.textContent = "";
+
+        setTimeout(function () {
+            updateCertificate(0);
+        }, 0);
+    });
+
+});
+</script>
+
 </body>
 </html>
+
