@@ -272,6 +272,78 @@ footer {
         color: transparent;
     }
 }
+```css
+/* CERTIFICATE ID */
+.certificate-id {
+    margin-top: 18px !important;
+    font-family: Arial, sans-serif;
+    font-size: 13px !important;
+}
+
+#certificateId {
+    color: #9b7625;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* SIGNATURE SECTION */
+.signature-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 45px;
+    margin-top: 45px;
+    padding: 0 15px;
+}
+
+.signature {
+    flex: 1;
+    max-width: 300px;
+    text-align: center;
+}
+
+.signature-line {
+    height: 1px;
+    background: #271119;
+    margin-bottom: 8px;
+}
+
+.signature p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    margin: 5px 0 !important;
+}
+
+.signature small {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    color: #6b5961;
+}
+
+@media screen and (max-width: 600px) {
+    .signature-section {
+        gap: 20px;
+        padding: 0;
+    }
+
+    .signature p {
+        font-size: 10px !important;
+    }
+
+    .signature small {
+        font-size: 8px;
+    }
+}
+
+@media print {
+    .signature-section {
+        break-inside: avoid;
+    }
+
+    .certificate-id {
+        font-size: 11px !important;
+    }
+}
 
     </style>
 </head>
@@ -321,12 +393,33 @@ footer {
 
         <p><strong>Course:</strong> Introduction to Cybersecurity</p>
 
-        <p>
-            <strong>Date of Issue:</strong>
-            <span id="issueDate"></span>
-        </p>
+      
+<p>
+    <strong>Date of Issue:</strong>
+    <span id="issueDate"></span>
+</p>
 
-        <p>Keep learning. Stay ethical. Protect the digital world.</p>
+<p class="certificate-id">
+    <strong>Certificate ID:</strong>
+    <span id="certificateId">Generating...</span>
+</p>
+
+<p>Keep learning. Stay ethical. Protect the digital world.</p>
+
+<div class="signature-section">
+    <div class="signature">
+        <div class="signature-line"></div>
+        <p><strong>Instructor's Signature</strong></p>
+        <small>REZ HUB AND TECHNOLOGY</small>
+    </div>
+
+    <div class="signature">
+        <div class="signature-line"></div>
+        <p><strong>Administrator's Signature</strong></p>
+        <small>Authorized Official</small>
+    </div>
+</div>
+
 
         <p><strong>REZ HUB AND TECHNOLOGY</strong></p>
     </div>
@@ -381,6 +474,41 @@ const certificateContent = document.getElementById("certificateContent");
 const certificateActions = document.getElementById("certificateActions");
 const studentName = document.getElementById("studentName");
 const printButton = document.getElementById("printButton");
+```javascript
+const certificateIdElement =
+    document.getElementById("certificateId");
+
+function updateCertificateId() {
+    const name = studentName.value.trim().toLowerCase();
+    const date = document.getElementById("issueDate").textContent;
+
+    if (!name || !date) {
+        certificateIdElement.textContent = "Enter student name";
+        return;
+    }
+
+    const storageKey =
+        "rezHubCertificateId:" + date + ":" + name;
+
+    let id = localStorage.getItem(storageKey);
+
+    if (!id) {
+        const randomCode = Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase();
+
+        const dateCode = new Date()
+            .toISOString()
+            .slice(0, 10)
+            .replace(/-/g, "");
+
+        id = "RH-" + dateCode + "-" + randomCode;
+        localStorage.setItem(storageKey, id);
+    }
+
+    certificateIdElement.textContent = id;
+}
 
 onAuthStateChanged(auth, async function (user) {
     if (!user) {
@@ -461,7 +589,8 @@ function checkQuizResults() {
 
     document.getElementById("issueDate").textContent =
         new Date().toLocaleDateString();
-
+studentName.addEventListener("input", updateCertificateId);
+updateCertificateId();
     studentName.addEventListener("input", function () {
         studentName.value = studentName.value.replace(/[<>]/g, "");
     });
