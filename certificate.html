@@ -272,7 +272,7 @@ footer {
         color: transparent;
     }
 }
-```css
+
 /* CERTIFICATE ID */
 .certificate-id {
     margin-top: 18px !important;
@@ -441,7 +441,7 @@ footer {
 
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
 import {
     getAuth,
@@ -455,7 +455,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+    apiKey: "5DFoHD73B7cA7dHP40NsWbeMUHB3",
     authDomain: "rez-hub-technology.firebaseapp.com",
     projectId: "rez-hub-technology",
     storageBucket: "rez-hub-technology.firebasestorage.app",
@@ -474,22 +474,19 @@ const certificateContent = document.getElementById("certificateContent");
 const certificateActions = document.getElementById("certificateActions");
 const studentName = document.getElementById("studentName");
 const printButton = document.getElementById("printButton");
-```javascript
-const certificateIdElement =
-    document.getElementById("certificateId");
+const issueDate = document.getElementById("issueDate");
+const certificateIdElement = document.getElementById("certificateId");
 
 function updateCertificateId() {
     const name = studentName.value.trim().toLowerCase();
-    const date = document.getElementById("issueDate").textContent;
+    const date = issueDate.textContent.trim();
 
     if (!name || !date) {
         certificateIdElement.textContent = "Enter student name";
         return;
     }
 
-    const storageKey =
-        "rezHubCertificateId:" + date + ":" + name;
-
+    const storageKey = "rezHubCertificateId:" + date + ":" + name;
     let id = localStorage.getItem(storageKey);
 
     if (!id) {
@@ -509,6 +506,11 @@ function updateCertificateId() {
 
     certificateIdElement.textContent = id;
 }
+
+studentName.addEventListener("input", function () {
+    studentName.value = studentName.value.replace(/[<>]/g, "");
+    updateCertificateId();
+});
 
 onAuthStateChanged(auth, async function (user) {
     if (!user) {
@@ -534,7 +536,7 @@ onAuthStateChanged(auth, async function (user) {
         console.error("Admin verification failed:", error);
         document.body.style.visibility = "visible";
         statusMessage.textContent =
-            "Unable to verify administrator access. Please check your connection and Firestore rules, then try again.";
+            "Unable to verify administrator access. Check your connection and Firestore rules, then refresh.";
     }
 });
 
@@ -554,7 +556,6 @@ function checkQuizResults() {
         }
 
         const score = Number(storedScore);
-
         return Number.isFinite(score) && score >= 2 && score <= 3;
     });
 
@@ -567,8 +568,7 @@ function checkQuizResults() {
                 const valid = storedScore !== null &&
                     storedScore.trim() !== "" &&
                     Number.isFinite(score) &&
-                    score >= 2 &&
-                    score <= 3;
+                    score >= 2 && score <= 3;
 
                 return valid ? null : "Lesson " + (index + 1);
             })
@@ -587,13 +587,8 @@ function checkQuizResults() {
     certificateContent.hidden = false;
     certificateActions.hidden = false;
 
-    document.getElementById("issueDate").textContent =
-        new Date().toLocaleDateString();
-studentName.addEventListener("input", updateCertificateId);
-updateCertificateId();
-    studentName.addEventListener("input", function () {
-        studentName.value = studentName.value.replace(/[<>]/g, "");
-    });
+    issueDate.textContent = new Date().toLocaleDateString();
+    updateCertificateId();
 
     printButton.addEventListener("click", function () {
         if (!studentName.value.trim()) {
@@ -602,6 +597,7 @@ updateCertificateId();
             return;
         }
 
+        updateCertificateId();
         window.print();
     });
 }
