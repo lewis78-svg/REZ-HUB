@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login | REZ HUB</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 30px 15px;
+    }
+    .login-box {
+      max-width: 380px;
+      margin: 60px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px #0002;
+    }
+    h2 { color: #271119; text-align: center; }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    button {
+      background: #271119;
+      color: white;
+      border: 0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #message { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>REZ HUB Admin</h2>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="Admin email"
+             autocomplete="username" required>
+      <input id="password" type="password" placeholder="Password"
+             autocomplete="current-password" required>
+      <button type="submit">Log In</button>
+    </form>
+    <p id="message" role="status"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword }
+      from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc }
+      from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+      authDomain: "rez-hub-technology.firebaseapp.com",
+      projectId: "rez-hub-technology",
+      storageBucket: "rez-hub-technology.firebasestorage.app",
+      messagingSenderId: "700283422991",
+      appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const message = document.getElementById("message");
+
+    document.getElementById("loginForm").addEventListener(
+      "submit", async (event) => {
+        event.preventDefault();
+        message.textContent = "Checking admin account...";
+
+        try {
+          const result = await signInWithEmailAndPassword(
+            auth,
+            document.getElementById("email").value.trim(),
+            document.getElementById("password").value
+          );
+
+          const roleDoc = await getDoc(
+            doc(db, "admins", result.user.uid)
+          );
+
+          if (!roleDoc.exists() ||
+              roleDoc.data().role !== "admin") {
+            await auth.signOut();
+            message.textContent =
+              "Access denied. This account is not an administrator.";
+            return;
+          }
+
+          message.textContent = "Admin verified. Opening certificate page...";
+          window.location.href = "certificate.html";
+        } catch (error) {
+          message.textContent =
+            "Login failed. Check your details and Firebase setup.";
+          console.error(error);
+        }
+      }
+    );
+  </script>
+</body>
+</html>
