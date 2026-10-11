@@ -88,13 +88,23 @@
             doc(db, "admins", result.user.uid)
           );
 
-          if (!roleDoc.exists() ||
-              roleDoc.data().role !== "admin") {
-            await auth.signOut();
-            message.textContent =
-              "Access denied. This account is not an administrator.";
-            return;
-          }
+         const roleData = roleDoc.exists()
+  ? roleDoc.data()
+  : null;
+
+console.log("Signed-in UID:", result.user.uid);
+console.log("Admin document exists:", roleDoc.exists());
+console.log("Admin role:", roleData?.role);
+
+if (!roleDoc.exists() || roleData?.role !== "admin") {
+  await auth.signOut();
+
+  message.textContent = !roleDoc.exists()
+    ? "Admin document not found for this account. Check the document ID."
+    : "Admin role mismatch. Check that role is the string admin.";
+
+  return;
+}
 
           message.textContent = "Admin verified. Opening certificate page...";
           window.location.href = "certificate.html";
