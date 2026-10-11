@@ -183,9 +183,71 @@
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+```html
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+    authDomain: "rez-hub-technology.firebaseapp.com",
+    projectId: "rez-hub-technology",
+    storageBucket: "rez-hub-technology.firebasestorage.app",
+    messagingSenderId: "700283422991",
+    appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.body.style.visibility = "hidden";
+
+const statusMessage = document.getElementById("statusMessage");
+const certificateContent = document.getElementById("certificateContent");
+const certificateActions = document.getElementById("certificateActions");
+const studentName = document.getElementById("studentName");
+const printButton = document.getElementById("printButton");
+
+onAuthStateChanged(auth, async function (user) {
+    if (!user) {
+        window.location.replace("admin-login.html");
+        return;
+    }
+
+    try {
+        const adminRef = doc(db, "admins", user.uid);
+        const adminSnapshot = await getDoc(adminRef);
+
+        if (!adminSnapshot.exists() ||
+            adminSnapshot.data().role !== "admin") {
+            alert("Access denied. Administrator access is required.");
+            window.location.replace("admin-login.html");
+            return;
+        }
+
+        document.body.style.visibility = "visible";
+        checkQuizResults();
+
+    } catch (error) {
+        console.error("Admin verification failed:", error);
+        document.body.style.visibility = "visible";
+        statusMessage.textContent =
+            "Unable to verify administrator access. Please check your connection and Firestore rules, then try again.";
+    }
+});
+
+function checkQuizResults() {
     const requiredLessons = [
         "lesson1Score",
         "lesson2Score",
@@ -193,38 +255,37 @@ document.addEventListener("DOMContentLoaded", function () {
         "lesson4Score"
     ];
 
-    const statusMessage = document.getElementById("statusMessage");
-    const certificateContent = document.getElementById("certificateContent");
-    const certificateActions = document.getElementById("certificateActions");
-    const studentName = document.getElementById("studentName");
-    const printButton = document.getElementById("printButton");
-
     const allPassed = requiredLessons.every(function (key) {
-        const score = Number(localStorage.getItem(key));
-        return localStorage.getItem(key) !== null &&
-               Number.isFinite(score) &&
-               score >= 2 &&
-               score <= 3;
+        const storedScore = localStorage.getItem(key);
+
+        if (storedScore === null || storedScore.trim() === "") {
+            return false;
+        }
+
+        const score = Number(storedScore);
+
+        return Number.isFinite(score) && score >= 2 && score <= 3;
     });
 
     if (!allPassed) {
-        statusMessage.textContent =
-            "Certificate locked. You must pass all four lesson quizzes with at least 2/3 in each lesson.";
-
         const missingLessons = requiredLessons
             .map(function (key, index) {
-                const score = Number(localStorage.getItem(key));
-                const valid = localStorage.getItem(key) !== null &&
-                              Number.isFinite(score) &&
-                              score >= 2 &&
-                              score <= 3;
+                const storedScore = localStorage.getItem(key);
+                const score = Number(storedScore);
+
+                const valid = storedScore !== null &&
+                    storedScore.trim() !== "" &&
+                    Number.isFinite(score) &&
+                    score >= 2 &&
+                    score <= 3;
 
                 return valid ? null : "Lesson " + (index + 1);
             })
             .filter(Boolean);
 
-        statusMessage.textContent +=
-            " Complete or retake: " + missingLessons.join(", ") + ".";
+        statusMessage.textContent =
+            "Certificate locked. Pass all four lesson quizzes with at least 2/3. Complete or retake: " +
+            missingLessons.join(", ") + ".";
 
         return;
     }
@@ -251,8 +312,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.print();
     });
-});
+}
 </script>
+
 
 </body>
 </html>
