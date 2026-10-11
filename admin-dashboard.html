@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | REZ HUB</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f6;
+      color: #25212a;
+    }
+
+    header {
+      background: #271119;
+      color: white;
+      padding: 20px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    header h1 { margin: 0; font-size: 22px; }
+
+    button, .action {
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .logout { background: #fff; color: #271119; }
+    .primary { background: #271119; color: #fff; }
+    .gold { background: #d7b56d; color: #271119; }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .welcome { margin-bottom: 24px; }
+    .welcome h2 { margin-bottom: 6px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card, .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px #0000000c;
+    }
+
+    .card p { color: #68616b; margin: 0 0 12px; }
+    .number { font-size: 30px; font-weight: bold; color: #6b243d; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .panel h3 { margin-top: 0; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 650px;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 13px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th { background: #f8f5f6; }
+
+    #message {
+      margin: 15px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .error { color: #a01830; }
+    .success { color: #176c3a; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <button id="logoutButton" class="logout" hidden>Log Out</button>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <h2>Administrator Dashboard</h2>
+      <p>Manage students, review learning progress, and access certificates.</p>
+      <p id="message" role="status">Verifying administrator account...</p>
+    </section>
+
+    <section class="stats">
+      <div class="card">
+        <p>Registered Students</p>
+        <div class="number" id="totalStudents">—</div>
+      </div>
+      <div class="card">
+        <p>Completed All Lessons</p>
+        <div class="number" id="completedStudents">—</div>
+      </div>
+      <div class="card">
+        <p>Certificates Issued</p>
+        <div class="number" id="totalCertificates">—</div>
+      </div>
+    </section>
+
+    <section class="actions">
+      <a class="action primary" href="certificate.html">Open Certificate Page</a>
+      <button class="gold" id="refreshButton">Refresh Data</button>
+    </section>
+
+    <section class="panel">
+      <h3>Student Records</h3>
+      <p>Records are loaded from the Firestore <strong>students</strong> collection.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Email</th>
+              <th>Lessons Completed</th>
+              <th>Course Status</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTable">
+            <tr><td colspan="4">Loading records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 REZ HUB AND TECHNOLOGY</footer>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+      authDomain: "rez-hub-technology.firebaseapp.com",
+      projectId: "rez-hub-technology",
+      storageBucket: "rez-hub-technology.firebasestorage.app",
+      messagingSenderId: "700283422991",
+      appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const message = document.getElementById("message");
+    const logoutButton = document.getElementById("logoutButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const studentsTable = document.getElementById("studentsTable");
+
+    let authorized = false;
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.className = isError ? "error" : "success";
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("admin-login.html");
+        return;
+      }
+
+      try {
+        const adminSnapshot = await getDoc(
+          doc(db, "admins", user.uid)
+        );
+
+        if (!adminSnapshot.exists() ||
+            adminSnapshot.data().role !== "admin") {
+          await signOut(auth);
+          window.location.replace("admin-login.html");
+          return;
+        }
+
+        authorized = true;
+        logoutButton.hidden = false;
+        showMessage("Administrator verified. Dashboard ready.");
+        await loadDashboard();
+      } catch (error) {
+        console.error("Dashboard authorization error:", error);
+        showMessage(
+          "Could not verify your administrator account. Check Firestore rules and connection.",
+          true
+        );
+      }
+    });
+
+    async function loadDashboard() {
+      if (!authorized) return;
+
+      studentsTable.innerHTML =
+        '<tr><td colspan="4">Loading records...</td></tr>';
+
+      try {
+        const snapshot = await getDocs(collection(db, "students"));
+        const students = snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+        document.getElementById("totalStudents").textContent =
+          students.length;
+
+        const completed = students.filter(student =>
+          student.completedLessons === 4 ||
+          student.courseCompleted === true
+        );
+
+        document.getElementById("completedStudents").textContent =
+          completed.length;
+
+        document.getElementById("totalCertificates").textContent =
+          students.filter(student =>
+            student.certificateIssued === true
+          ).length;
+
+        studentsTable.replaceChildren();
+
+        if (students.length === 0) {
+          const row = studentsTable.insertRow();
+          const cell = row.insertCell();
+          cell.colSpan = 4;
+          cell.textContent =
+            "No student records found in the students collection yet.";
+          showMessage("Dashboard loaded. No student records found yet.");
+          return;
+        }
+
+        students.forEach(student => {
+          const row = studentsTable.insertRow();
+
+          const nameCell = row.insertCell();
+          const emailCell = row.insertCell();
+          const lessonsCell = row.insertCell();
+          const statusCell = row.insertCell();
+
+          nameCell.textContent = student.name || "Not provided";
+          emailCell.textContent = student.email || "Not provided";
+
+          const lessonCount = Number(student.completedLessons);
+          lessonsCell.textContent =
+            Number.isFinite(lessonCount)
+              ? Math.min(4, Math.max(0, lessonCount)) + " / 4"
+              : "Not recorded";
+
+          statusCell.textContent =
+            student.completedLessons === 4 ||
+            student.courseCompleted === true
+              ? "Completed"
+              : "In progress";
+        });
+
+        showMessage("Dashboard data loaded successfully.");
+      } catch (error) {
+        console.error("Dashboard data error:", error);
+        studentsTable.innerHTML =
+          '<tr><td colspan="4">Could not load student records.</td></tr>';
+        showMessage(
+          "Student records could not be loaded. Check your Firestore rules and students collection.",
+          true
+        );
+      }
+    }
+
+    refreshButton.addEventListener("click", loadDashboard);
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.replace("admin-login.html");
+    });
+  </script>
+</body>
+</html>
