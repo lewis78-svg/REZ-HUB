@@ -8,108 +8,271 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .certificate-container {
-            max-width: 900px;
-            margin: 35px auto;
-            padding: 20px;
-        }
+        
+/* REZ HUB PROFESSIONAL CERTIFICATE DESIGN */
 
-        .certificate {
-            background: #fff;
-            color: #222;
-            border: 10px double #271119;
-            outline: 3px solid #d4af37;
-            outline-offset: -20px;
-            padding: 55px 35px;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-        }
+body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: #f1edf0;
+    color: #271119;
+    margin: 0;
+}
 
-        .certificate h1 {
-            color: #271119;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
+/* Website header and footer */
+header {
+    background: #271119;
+    color: white;
+    text-align: center;
+    padding: 24px 15px;
+    border-bottom: 4px solid #d4af37;
+}
 
-        .certificate h2 {
-            color: #9b7625;
-            font-size: 28px;
-            margin: 20px 0;
-        }
+header h1 {
+    margin: 0 0 8px;
+    letter-spacing: 2px;
+    font-size: 25px;
+}
 
-        .student-name {
-            display: block;
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 10px;
-            border: none;
-            border-bottom: 2px solid #9b7625;
-            font-size: 26px;
-            text-align: center;
-            color: #271119;
-            background: transparent;
-        }
+header p {
+    margin: 0;
+    color: #ead9a0;
+    font-family: Arial, sans-serif;
+}
 
-        .certificate p {
-            margin: 12px 0;
-            line-height: 1.7;
-        }
+footer {
+    background: #271119;
+    color: #eee;
+    text-align: center;
+    padding: 15px;
+    margin-top: 35px;
+    font-family: Arial, sans-serif;
+}
 
-        .certificate-actions {
-            text-align: center;
-            margin: 25px 0;
-        }
+/* Main certificate area */
+.certificate-container {
+    max-width: 1050px;
+    margin: 35px auto;
+    padding: 20px;
+}
 
-        .certificate-actions button,
-        .certificate-actions a {
-            display: inline-block;
-            margin: 8px;
-            padding: 12px 20px;
-            background: #271119;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.certificate-container > h2 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #271119;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
 
-        .certificate-message {
-            text-align: center;
-            margin: 20px 0;
-            color: #fff;
-        }
+.certificate-message {
+    text-align: center;
+    margin: 20px 0;
+    color: #51414a;
+    font-family: Arial, sans-serif;
+    line-height: 1.7;
+}
 
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-            }
+/* Certificate paper */
+.certificate {
+    position: relative;
+    background: #fffefa;
+    color: #292126;
+    border: 10px double #271119;
+    outline: 2px solid #d4af37;
+    outline-offset: -20px;
+    padding: 55px 45px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(39, 17, 25, 0.18);
+}
 
-            header, footer, .certificate-actions,
-            .certificate-message, .certificate-container > h2,
-            .certificate-container > p {
-                display: none !important;
-            }
+/* Decorative gold line */
+.certificate h1::after {
+    content: "";
+    display: block;
+    width: 115px;
+    height: 3px;
+    background: #d4af37;
+    margin: 15px auto 0;
+}
 
-            .certificate-container {
-                max-width: none;
-                margin: 0;
-                padding: 0;
-            }
+.certificate h1 {
+    color: #271119;
+    font-family: Georgia, serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin: 0 0 12px;
+}
 
-            .certificate {
-                box-shadow: none;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                break-inside: avoid;
-            }
+.certificate h2 {
+    color: #9b7625;
+    font-family: Georgia, serif;
+    font-size: 30px;
+    letter-spacing: 2px;
+    margin: 25px 0;
+}
 
-            @page {
-                size: landscape;
-                margin: 10mm;
-            }
-        }
+.certificate p {
+    margin: 14px 0;
+    line-height: 1.8;
+    font-size: 16px;
+}
+
+.certificate p strong {
+    color: #271119;
+}
+
+/* Student's name */
+.student-name {
+    display: block;
+    width: 100%;
+    max-width: 620px;
+    margin: 22px auto;
+    padding: 12px 5px;
+    border: none;
+    border-bottom: 2px solid #d4af37;
+    outline: none;
+    font-family: Georgia, serif;
+    font-size: 29px;
+    font-weight: bold;
+    text-align: center;
+    color: #271119;
+    background: transparent;
+}
+
+.student-name::placeholder {
+    color: #a49a9e;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+/* Buttons */
+.certificate-actions {
+    text-align: center;
+    margin: 28px 0;
+}
+
+.certificate-actions button,
+.certificate-actions a {
+    display: inline-block;
+    margin: 8px;
+    padding: 14px 24px;
+    background: #271119;
+    color: white;
+    border: 2px solid #271119;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.certificate-actions button:hover,
+.certificate-actions a:hover {
+    background: #d4af37;
+    color: #271119;
+    border-color: #d4af37;
+}
+
+/* Preserve hidden sections */
+[hidden] {
+    display: none !important;
+}
+
+/* Phone screens */
+@media screen and (max-width: 600px) {
+    .certificate-container {
+        margin: 15px auto;
+        padding: 10px;
+    }
+
+    .certificate {
+        padding: 42px 24px;
+        border-width: 7px;
+        outline-offset: -15px;
+    }
+
+    .certificate h1 {
+        font-size: 23px;
+        letter-spacing: 1px;
+    }
+
+    .certificate h2 {
+        font-size: 22px;
+        letter-spacing: 1px;
+    }
+
+    .certificate p {
+        font-size: 14px;
+    }
+
+    .student-name {
+        font-size: 22px;
+    }
+}
+
+/* Professional landscape printing */
+@media print {
+    @page {
+        size: landscape;
+        margin: 10mm;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+    }
+
+    header,
+    footer,
+    .certificate-actions,
+    .certificate-message,
+    .certificate-container > h2,
+    .certificate-container > p {
+        display: none !important;
+    }
+
+    .certificate-container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .certificate {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 175mm;
+        padding: 35px 40px;
+        box-shadow: none;
+        outline-offset: -15px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        break-inside: avoid;
+    }
+
+    .certificate h1 {
+        font-size: 28px;
+    }
+
+    .certificate h2 {
+        font-size: 26px;
+    }
+
+    .certificate p {
+        line-height: 1.5;
+        margin: 10px 0;
+    }
+
+    .student-name {
+        color: #271119 !important;
+        border-bottom-color: #d4af37;
+    }
+
+    .student-name::placeholder {
+        color: transparent;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -183,7 +346,7 @@
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 
-```html
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
