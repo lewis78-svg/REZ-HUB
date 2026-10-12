@@ -257,76 +257,123 @@ three checks you would perform before asking for technical support.</p>
 </footer>
 
 
-<script>
+
+<script type="module">
+import { initializeApp, getApp, getApps } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+import { getAuth, onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+import { getFirestore, doc, getDoc, updateDoc } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+  authDomain: "rez-hub-technology.firebaseapp.com",
+  projectId: "rez-hub-technology",
+  storageBucket: "rez-hub-technology.firebasestorage.app",
+  messagingSenderId: "700283422991",
+  appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+};
+
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Require a passing Lesson 1 score before entering Lesson 2.
-    if (Number(localStorage.getItem("lesson1Score") || 0) < 2) {
-        alert("You must score at least 2 out of 3 in Lesson 1 before proceeding.");
-        window.location.replace("lesson1.html");
+  const quiz = document.getElementById("lesson2Quiz");
+  const result = document.getElementById("lesson2Result");
+  const nextLesson = document.getElementById("nextLessonLink");
+
+  let currentUser = null;
+
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+  });
+
+  if (Number(localStorage.getItem("lesson1Score") || 0) < 2) {
+    alert("You must score at least 2 out of 3 in Lesson 1 before proceeding.");
+    window.location.replace("lesson1.html");
+    return;
+  }
+
+  function updateNextLesson(score) {
+    if (score >= 2) {
+      nextLesson.href = "lesson3.html";
+      nextLesson.style.opacity = "1";
+      nextLesson.style.pointerEvents = "auto";
+      nextLesson.textContent = "Next Lesson →";
+    } else {
+      nextLesson.removeAttribute("href");
+      nextLesson.style.opacity = "0.5";
+      nextLesson.style.pointerEvents = "none";
+      nextLesson.textContent = "Locked: Score 2/3 to continue";
+    }
+  }
+
+  updateNextLesson(Number(localStorage.getItem("lesson2Score") || 0));
+
+  quiz.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const answers = { q1: "B", q2: "C", q3: "A" };
+    let score = 0;
+
+    for (const question in answers) {
+      const selected = quiz.querySelector(
+        'input[name="' + question + '"]:checked'
+      );
+      if (selected && selected.value === answers[question]) score++;
+    }
+
+    localStorage.setItem("lesson2Score", String(score));
+
+    result.textContent = "Your score: " + score + "/3. " +
+      (score >= 2
+        ? "Congratulations! You passed and can proceed to Lesson 3."
+        : "You need at least 2/3 to proceed. Please try again.");
+
+    updateNextLesson(score);
+
+    if (!currentUser) {
+      result.textContent += " Please log in to save your progress online.";
+      return;
+    }
+
+    try {
+      const studentRef = doc(db, "students", currentUser.uid);
+      const snapshot = await getDoc(studentRef);
+
+      if (!snapshot.exists()) {
+        result.textContent += " Student profile not found in Firestore.";
         return;
+      }
+
+      const previous = Number(snapshot.data().completedLessons) || 0;
+      const completedLessons = Math.max(previous, score >= 2 ? 2 : 1);
+
+      await updateDoc(studentRef, {
+        completedLessons: completedLessons
+      });
+
+      result.textContent += " Your progress has been saved online.";
+    } catch (error) {
+      console.error("Lesson 2 progress error:", error);
+      result.textContent +=
+        " Could not save progress. Check your Firebase permissions.";
     }
+  });
 
-    const quiz = document.getElementById("lesson2Quiz");
-    const result = document.getElementById("lesson2Result");
-    const nextLesson = document.getElementById("nextLessonLink");
-
-    function updateNextLesson(score) {
-        if (score >= 2) {
-            nextLesson.href = "lesson3.html";
-            nextLesson.style.opacity = "1";
-            nextLesson.style.pointerEvents = "auto";
-            nextLesson.textContent = "Next Lesson →";
-        } else {
-            nextLesson.removeAttribute("href");
-            nextLesson.style.opacity = "0.5";
-            nextLesson.style.pointerEvents = "none";
-            nextLesson.textContent = "Locked: Score 2/3 to continue";
-        }
-    }
-
-    const savedScore = Number(localStorage.getItem("lesson2Score") || 0);
-    updateNextLesson(savedScore);
-
-    quiz.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const answers = {
-            q1: "B",
-            q2: "C",
-            q3: "A"
-        };
-
-        let score = 0;
-
-        for (const question in answers) {
-            const selected = quiz.querySelector(
-                'input[name="' + question + '"]:checked'
-            );
-
-            if (selected && selected.value === answers[question]) {
-                score++;
-            }
-        }
-
-        localStorage.setItem("lesson2Score", String(score));
-
-        result.textContent = "Your score: " + score + "/3. " +
-            (score >= 2
-                ? "Congratulations! You passed and can proceed to Lesson 3."
-                : "You need at least 2/3 to proceed. Please try again.");
-
-        updateNextLesson(score);
-    });
-
-    quiz.addEventListener("reset", function () {
-        localStorage.removeItem("lesson2Score");
-        result.textContent = "";
-        setTimeout(function () {
-            updateNextLesson(0);
-        }, 0);
-    });
+  quiz.addEventListener("reset", function () {
+    // Reset the quiz display, but retain previously earned progress.
+    result.textContent = "";
+    setTimeout(function () {
+      updateNextLesson(Number(localStorage.getItem("lesson2Score") || 0));
+    }, 0);
+  });
 });
-
 </script>
+
 </body>
 </html>
