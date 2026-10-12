@@ -193,72 +193,146 @@ write down two safe actions you would take.</p>
 
 
 
-<script>
+
+<script type="module">
+import { initializeApp, getApp, getApps } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc
+} from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+  authDomain: "rez-hub-technology.firebaseapp.com",
+  projectId: "rez-hub-technology",
+  storageBucket: "rez-hub-technology.firebasestorage.app",
+  messagingSenderId: "700283422991",
+  appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+};
+
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 document.addEventListener("DOMContentLoaded", function () {
-    const quiz = document.getElementById("lesson1Quiz");
-    const result = document.getElementById("lesson1Result");
-    const nextLesson = document.getElementById("nextLessonLink");
+  const quiz = document.getElementById("lesson1Quiz");
+  const result = document.getElementById("lesson1Result");
+  const nextLesson = document.getElementById("nextLessonLink");
 
-    const answers = {
-        q1: "B",
-        q2: "A",
-        q3: "C"
-    };
+  const answers = {
+    q1: "B",
+    q2: "A",
+    q3: "C"
+  };
 
-    function updateNextLesson(score) {
-        if (score >= 2) {
-            nextLesson.href = "lesson2.html";
-            nextLesson.style.opacity = "1";
-            nextLesson.style.pointerEvents = "auto";
-            nextLesson.textContent = "Next Lesson →";
-        } else {
-            nextLesson.removeAttribute("href");
-            nextLesson.style.opacity = "0.5";
-            nextLesson.style.pointerEvents = "none";
-            nextLesson.textContent = "Locked: Score 2/3 to continue";
-        }
+  let currentUser = null;
+
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+  });
+
+  function updateNextLesson(score) {
+    if (score >= 2) {
+      nextLesson.href = "lesson2.html";
+      nextLesson.style.opacity = "1";
+      nextLesson.style.pointerEvents = "auto";
+      nextLesson.textContent = "Next Lesson →";
+    } else {
+      nextLesson.removeAttribute("href");
+      nextLesson.style.opacity = "0.5";
+      nextLesson.style.pointerEvents = "none";
+      nextLesson.textContent = "Locked: Score 2/3 to continue";
+    }
+  }
+
+  const savedScore = Number(localStorage.getItem("lesson1Score") || 0);
+  updateNextLesson(savedScore);
+
+  quiz.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    let score = 0;
+
+    for (const question in answers) {
+      const selected = quiz.querySelector(
+        'input[name="' + question + '"]:checked'
+      );
+
+      if (selected && selected.value === answers[question]) {
+        score++;
+      }
     }
 
-    const savedScore = Number(localStorage.getItem("lesson1Score") || 0);
-    updateNextLesson(savedScore);
+    localStorage.setItem("lesson1Score", String(score));
 
-    quiz.addEventListener("submit", function (event) {
-        event.preventDefault();
+    result.textContent = "Your score: " + score + "/3. " +
+      (score >= 2
+        ? "Congratulations! You passed."
+        : "You need at least 2/3 to pass. Please try again.");
 
-        let score = 0;
+    updateNextLesson(score);
 
-        for (const question in answers) {
-            const selected = quiz.querySelector(
-                'input[name="' + question + '"]:checked'
-            );
+    if (!currentUser) {
+      result.textContent +=
+        " Please log in to your student account to save your progress online.";
+      return;
+    }
 
-            if (selected && selected.value === answers[question]) {
-                score++;
-            }
-        }
+    try {
+      const studentRef = doc(db, "students", currentUser.uid);
+      const studentSnapshot = await getDoc(studentRef);
 
-        localStorage.setItem("lesson1Score", String(score));
+      if (!studentSnapshot.exists()) {
+        result.textContent +=
+          " Your student profile was not found in Firestore.";
+        return;
+      }
 
-        result.textContent = "Your score: " + score + "/3. " +
-            (score >= 2
-                ? "Congratulations! You passed and can proceed to Lesson 2."
-                : "You need at least 2/3 to proceed. Please try again.");
+      const student = studentSnapshot.data();
+      const previousLessons = Number(student.completedLessons) || 0;
 
-        updateNextLesson(score);
-    });
+      // Keep previously earned progress; do not count a lesson twice.
+      const completedLessons = Math.max(
+        previousLessons,
+        score >= 2 ? 1 : 0
+      );
 
-    quiz.addEventListener("reset", function () {
-        localStorage.removeItem("lesson1Score");
-        result.textContent = "";
-        setTimeout(function () {
-            updateNextLesson(0);
-        }, 0);
-    });
+      await updateDoc(studentRef, {
+        completedLessons: completedLessons
+      });
+
+      result.textContent +=
+        score >= 2
+          ? " Your Lesson 1 progress has been saved to your account."
+          : " Your current completed-lesson count is saved.";
+
+    } catch (error) {
+      console.error("Progress save error:", error);
+      result.textContent +=
+        " We could not save progress online. Please check your account and Firestore permissions.";
+    }
+  });
+
+  quiz.addEventListener("reset", function () {
+    result.textContent = "";
+    setTimeout(function () {
+      const saved = Number(localStorage.getItem("lesson1Score") || 0);
+      updateNextLesson(saved);
+    }, 0);
+  });
 });
 </script>
-
-
-
 
     <p>
         <a href="index.html">← Back to Home</a>
