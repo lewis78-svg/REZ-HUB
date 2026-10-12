@@ -96,6 +96,7 @@ console.log("Signed-in UID:", result.user.uid);
 console.log("Admin document exists:", roleDoc.exists());
 console.log("Admin role:", roleData?.role);
 
+
 if (!roleDoc.exists() || roleData?.role !== "admin") {
   await auth.signOut();
 
@@ -106,8 +107,9 @@ if (!roleDoc.exists() || roleData?.role !== "admin") {
   return;
 }
 
-          message.textContent = "Admin verified. Opening certificate page...";
-          window.location.href = "certificate.html";
+message.textContent = "Admin verified. Opening dashboard...";
+window.location.href = "admin-dashboard.html";
+
         } catch (error) {
           message.textContent =
             "Login failed. Check your details and Firebase setup.";
