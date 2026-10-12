@@ -324,14 +324,14 @@
       }
     });
 
-    onAuthStateChanged(auth, user => {
-      $("accountForms").classList.toggle("hidden", !!user);
-      $("signedIn").classList.toggle("hidden", !user);
-
+       onAuthStateChanged(auth, user => {
       if (user) {
-        $("welcome").textContent =
-          "Welcome, " + (user.displayName || user.email) + "!";
+        window.location.replace("student-dashboard.html");
+        return;
       }
+
+      $("accountForms").classList.remove("hidden");
+      $("signedIn").classList.add("hidden");
     });
 
     $("logoutButton").addEventListener("click", async () => {
