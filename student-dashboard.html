@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | REZ HUB</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f7;
+      color: #222;
+    }
+
+    header {
+      background: #271119;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 22px;
+    }
+
+    .logout-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 11px 17px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .welcome h2 {
+      color: #271119;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      color: #666;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 23px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .card .number {
+      font-size: 27px;
+      font-weight: bold;
+      color: #271119;
+      overflow-wrap: anywhere;
+    }
+
+    .section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .section h2 {
+      color: #271119;
+      margin-bottom: 18px;
+    }
+
+    .progress-track {
+      height: 14px;
+      width: 100%;
+      background: #e5e5e5;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #28a745;
+      transition: width 0.3s ease;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #fff3cd;
+      color: #856404;
+      font-size: 14px;
+    }
+
+    .action-btn {
+      display: inline-block;
+      background: #271119;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin: 8px 8px 0 0;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      background: #fff3cd;
+      color: #664d03;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <button id="logoutBtn" class="logout-btn">Log Out</button>
+  </header>
+
+  <main>
+    <div id="message" class="message">Checking your account...</div>
+
+    <div id="dashboard" class="hidden">
+      <section class="welcome">
+        <h2>Welcome, <span id="studentName">Student</span>!</h2>
+        <p>Email: <span id="studentEmail"></span></p>
+        <p>Welcome to your student learning dashboard.</p>
+      </section>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Completed Lessons</h3>
+          <div class="number" id="completedLessons">0</div>
+        </div>
+
+        <div class="card">
+          <h3>Course Status</h3>
+          <div class="number" id="courseStatus">In Progress</div>
+        </div>
+
+        <div class="card">
+          <h3>Certificate</h3>
+          <div class="number" id="certificateStatus">Not Issued</div>
+        </div>
+      </div>
+
+      <section class="section">
+        <h2>My Learning Progress</h2>
+        <p id="progressText">0 lessons completed</p>
+
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+
+        <p id="progressNote">
+          Your completed lessons will appear here.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>My Course</h2>
+        <p>
+          Continue learning and complete the required lessons
+          to qualify for your certificate.
+        </p>
+
+        <!-- Change this link to your actual course page if you have one. -->
+        <a href="index.html" class="action-btn">Explore REZ HUB</a>
+        <a href="certificate.html" class="action-btn">View Certificate</a>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+      authDomain: "rez-hub-technology.firebaseapp.com",
+      projectId: "rez-hub-technology",
+      storageBucket: "rez-hub-technology.firebasestorage.app",
+      messagingSenderId: "700283422991",
+      appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const message = document.getElementById("message");
+    const dashboard = document.getElementById("dashboard");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("student-account.html");
+        return;
+      }
+
+      try {
+        const studentRef = doc(db, "students", user.uid);
+        const studentSnapshot = await getDoc(studentRef);
+
+        if (!studentSnapshot.exists()) {
+          message.textContent =
+            "Your student profile was not found. Please sign out and register again, or contact the administrator.";
+          return;
+        }
+
+        const student = studentSnapshot.data();
+
+        document.getElementById("studentName").textContent =
+          student.name || user.displayName || "Student";
+
+        document.getElementById("studentEmail").textContent =
+          user.email || student.email || "Not available";
+
+        const lessons = Math.max(
+          0,
+          Number(student.completedLessons) || 0
+        );
+
+        const completed = student.courseCompleted === true;
+        const certificate = student.certificateIssued === true;
+
+        document.getElementById("completedLessons").textContent =
+          lessons;
+
+        document.getElementById("courseStatus").textContent =
+          completed ? "Completed" : "In Progress";
+
+        document.getElementById("certificateStatus").textContent =
+          certificate ? "Issued" : "Not Issued";
+
+        document.getElementById("progressText").textContent =
+          lessons + (lessons === 1
+            ? " lesson completed"
+            : " lessons completed");
+
+        /*
+          This dashboard displays lesson counts.
+          It does not assume a total number of lessons.
+          Connect your actual course system to calculate a percentage.
+        */
+        document.getElementById("progressFill").style.width =
+          completed ? "100%" : "0%";
+
+        document.getElementById("progressNote").textContent =
+          completed
+            ? "Congratulations! Your course is marked as completed."
+            : "Keep learning! Your course completion status is updated when your progress is recorded.";
+
+        message.classList.add("hidden");
+        dashboard.classList.remove("hidden");
+
+      } catch (error) {
+        console.error("Dashboard error:", error);
+
+        message.textContent =
+          "We could not load your student profile. Please refresh the page and try again.";
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        window.location.replace("student-account.html");
+      } catch (error) {
+        message.classList.remove("hidden");
+        message.textContent = "Unable to log out. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
