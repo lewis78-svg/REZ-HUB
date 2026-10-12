@@ -212,7 +212,7 @@ suggest two ways to prevent it.</p>
     record and should deny unauthorized requests.</p>
 </details>
 
-    ```html
+    
 <h3>13. Quick Quiz</h3>
 
 <p>Answer all three questions. You need at least 2/3 to unlock Lesson 4.</p>
@@ -268,11 +268,32 @@ suggest two ways to prevent it.</p>
     <p>&copy; 2026 REZ HUB AND TECHNOLOGY. All rights reserved.</p>
 </footer>
 
-```html
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    // Require a passing Lesson 2 score before entering Lesson 3.
+
+<script type="module">
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+    authDomain: "rez-hub-technology.firebaseapp.com",
+    projectId: "rez-hub-technology",
+    storageBucket: "rez-hub-technology.firebasestorage.app",
+    messagingSenderId: "700283422991",
+    appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+};
+
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", function () {
     if (Number(localStorage.getItem("lesson2Score") || 0) < 2) {
         alert("You must score at least 2 out of 3 in Lesson 2 before proceeding.");
         window.location.replace("lesson2.html");
@@ -288,6 +309,12 @@ document.addEventListener("DOMContentLoaded", function () {
         q2: "C",
         q3: "A"
     };
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, function (user) {
+        currentUser = user;
+    });
 
     function updateNextLesson(score) {
         if (score >= 2) {
@@ -306,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const savedScore = Number(localStorage.getItem("lesson3Score") || 0);
     updateNextLesson(savedScore);
 
-    quiz.addEventListener("submit", function (event) {
+    quiz.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         let score = 0;
@@ -322,13 +349,43 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         localStorage.setItem("lesson3Score", String(score));
+        updateNextLesson(score);
 
         result.textContent = "Your score: " + score + "/3. " +
             (score >= 2
                 ? "Congratulations! You passed and can proceed to Lesson 4."
                 : "You need at least 2/3 to proceed. Please try again.");
 
-        updateNextLesson(score);
+        if (score >= 2) {
+            if (!currentUser) {
+                result.textContent += " Please sign in to save your progress online.";
+                return;
+            }
+
+            try {
+                const studentRef = doc(db, "students", currentUser.uid);
+                const snapshot = await getDoc(studentRef);
+
+                if (!snapshot.exists()) {
+                    result.textContent += " Student profile not found. Please contact the administrator.";
+                    return;
+                }
+
+                const previous = Number(snapshot.data().completedLessons) || 0;
+                const completedLessons = Math.max(previous, 3);
+
+                if (completedLessons > previous) {
+                    await updateDoc(studentRef, {
+                        completedLessons: completedLessons
+                    });
+                }
+
+                result.textContent += " Your progress has been saved online.";
+            } catch (error) {
+                console.error("Could not save Lesson 3 progress:", error);
+                result.textContent += " Your online progress could not be saved. Please check your connection or contact the administrator.";
+            }
+        }
     });
 
     quiz.addEventListener("reset", function () {
@@ -339,7 +396,6 @@ document.addEventListener("DOMContentLoaded", function () {
             updateNextLesson(0);
         }, 0);
     });
-
 });
 </script>
 
