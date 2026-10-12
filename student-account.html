@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Account | REZ HUB AND TECHNOLOGY</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f1f2;
+      color: #292329;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px #00000012;
+    }
+
+    h1 {
+      text-align: center;
+      color: #581d34;
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .tabs button {
+      flex: 1;
+      background: #eee7ea;
+      color: #581d34;
+    }
+
+    .tabs button.active {
+      background: #581d34;
+      color: white;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .submit {
+      width: 100%;
+      margin-top: 22px;
+      background: #581d34;
+      color: white;
+      font-weight: bold;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    #message {
+      margin-top: 18px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden { display: none; }
+
+    .brand {
+      text-align: center;
+      color: #a17a36;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .signout {
+      background: #eee7ea;
+      color: #581d34;
+      width: 100%;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="brand">REZ HUB AND TECHNOLOGY</div>
+    <h1>Student Account</h1>
+    <p class="subtitle">Create an account or sign in to continue.</p>
+
+    <div id="accountForms">
+      <div class="tabs">
+        <button type="button" id="registerTab" class="active">
+          Register
+        </button>
+        <button type="button" id="loginTab">
+          Login
+        </button>
+      </div>
+
+      <form id="registerForm">
+        <label for="studentName">Full name</label>
+        <input id="studentName" type="text"
+          autocomplete="name" required maxlength="100">
+
+        <label for="registerEmail">Email address</label>
+        <input id="registerEmail" type="email"
+          autocomplete="email" required>
+
+        <label for="registerPassword">Password</label>
+        <input id="registerPassword" type="password"
+          autocomplete="new-password" minlength="6" required>
+
+        <button class="submit" type="submit" id="registerButton">
+          Create Student Account
+        </button>
+      </form>
+
+      <form id="loginForm" class="hidden">
+        <label for="loginEmail">Email address</label>
+        <input id="loginEmail" type="email"
+          autocomplete="email" required>
+
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password"
+          autocomplete="current-password" required>
+
+        <button class="submit" type="submit" id="loginButton">
+          Login
+        </button>
+      </form>
+    </div>
+
+    <div id="signedIn" class="hidden">
+      <p id="welcome"></p>
+      <p>Your account is signed in.</p>
+      <button type="button" class="signout" id="logoutButton">
+        Log Out
+      </button>
+    </div>
+
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+
+  <script type="module">
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+      authDomain: "rez-hub-technology.firebaseapp.com",
+      projectId: "rez-hub-technology",
+      storageBucket: "rez-hub-technology.firebasestorage.app",
+      messagingSenderId: "700283422991",
+      appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = id => document.getElementById(id);
+    const registerForm = $("registerForm");
+    const loginForm = $("loginForm");
+    const message = $("message");
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.style.color = isError ? "#b00020" : "#176b35";
+    }
+
+    function setMode(mode) {
+      const registering = mode === "register";
+      registerForm.classList.toggle("hidden", !registering);
+      loginForm.classList.toggle("hidden", registering);
+      $("registerTab").classList.toggle("active", registering);
+      $("loginTab").classList.toggle("active", !registering);
+      showMessage("");
+    }
+
+    $("registerTab").addEventListener("click",
+      () => setMode("register"));
+    $("loginTab").addEventListener("click",
+      () => setMode("login"));
+
+    function readableError(error) {
+      const errors = {
+        "auth/email-already-in-use":
+          "This email already has an account. Please log in.",
+        "auth/invalid-email":
+          "Please enter a valid email address.",
+        "auth/weak-password":
+          "Choose a stronger password with at least 6 characters.",
+        "auth/invalid-credential":
+          "Email or password is incorrect.",
+        "auth/network-request-failed":
+          "Network problem. Check your internet and try again.",
+        "auth/operation-not-allowed":
+          "Email/Password sign-in is not enabled in Firebase.",
+        "permission-denied":
+          "Firebase blocked saving your profile. Check Firestore rules."
+      };
+
+      return errors[error.code] ||
+        "Something went wrong. Error: " + error.code;
+    }
+
+    registerForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const button = $("registerButton");
+      button.disabled = true;
+      showMessage("Creating your account...");
+
+      let credential;
+
+      try {
+        const name = $("studentName").value.trim();
+        const email = $("registerEmail").value.trim();
+
+        if (!name) throw new Error("Please enter your full name.");
+
+        credential = await createUserWithEmailAndPassword(
+          auth, email, $("registerPassword").value
+        );
+
+        await updateProfile(credential.user, {
+          displayName: name
+        });
+
+        await setDoc(doc(db, "students", credential.user.uid), {
+          name: name,
+          email: credential.user.email,
+          createdAt: serverTimestamp(),
+          completedLessons: 0,
+          courseCompleted: false,
+          certificateIssued: false
+        });
+
+        showMessage("Account created successfully!");
+      } catch (error) {
+        console.error(error);
+        showMessage(
+          error.message.startsWith("Please enter")
+            ? error.message
+            : readableError(error),
+          true
+        );
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    loginForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const button = $("loginButton");
+      button.disabled = true;
+      showMessage("Signing in...");
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          $("loginEmail").value.trim(),
+          $("loginPassword").value
+        );
+
+        showMessage("Login successful!");
+      } catch (error) {
+        console.error(error);
+        showMessage(readableError(error), true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    onAuthStateChanged(auth, user => {
+      $("accountForms").classList.toggle("hidden", !!user);
+      $("signedIn").classList.toggle("hidden", !user);
+
+      if (user) {
+        $("welcome").textContent =
+          "Welcome, " + (user.displayName || user.email) + "!";
+      }
+    });
+
+    $("logoutButton").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showMessage("You have logged out.");
+        setMode("login");
+      } catch (error) {
+        showMessage(readableError(error), true);
+      }
+    });
+  </script>
+</body>
+</html>
