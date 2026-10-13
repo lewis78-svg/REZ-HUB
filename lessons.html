@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Lessons | REZ HUB AND TECHNOLOGY</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .lessons-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .lessons-header {
+      background: #271119;
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .lesson-card {
+      background: white;
+      padding: 22px;
+      margin: 16px 0;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px #0001;
+    }
+
+    .lesson-card h3 {
+      margin-top: 0;
+    }
+
+    .lesson-card a {
+      color: #7b2039;
+      font-weight: bold;
+    }
+
+    #logoutBtn {
+      background: white;
+      color: #271119;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #pageStatus {
+      text-align: center;
+      padding: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="lessons-container" id="lessonsContent" hidden>
+    <header class="lessons-header">
+      <h1>REZ HUB AND TECHNOLOGY</h1>
+      <h2>Student Learning Centre</h2>
+      <p>Welcome, <strong id="studentName">Student</strong>!</p>
+      <p>Access your learning materials below.</p>
+      <button id="logoutBtn" type="button">Log Out</button>
+    </header>
+
+    <section aria-labelledby="lessonsHeading">
+      <h2 id="lessonsHeading">Available Lessons</h2>
+      <p>Choose a subject to begin learning.</p>
+
+      <article class="lesson-card">
+        <h3>Computer Fundamentals</h3>
+        <p>Learn about computer components, hardware, software and operating systems.</p>
+        <a href="computer-fundamentals.html">Open Lesson</a>
+      </article>
+
+      <article class="lesson-card">
+        <h3>Microsoft Word</h3>
+        <p>Learn document creation, formatting, tables and page layout.</p>
+        <a href="microsoft-word.html">Open Lesson</a>
+      </article>
+
+      <article class="lesson-card">
+        <h3>Microsoft Excel</h3>
+        <p>Learn spreadsheets, formulas, functions and charts.</p>
+        <a href="microsoft-excel.html">Open Lesson</a>
+      </article>
+
+      <article class="lesson-card">
+        <h3>Web Development</h3>
+        <p>Learn HTML, CSS and JavaScript for building websites.</p>
+        <a href="web-development.html">Open Lesson</a>
+      </article>
+    </section>
+  </main>
+
+  <p id="pageStatus" role="status">Checking your login...</p>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from
+      "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm_NjHz8Bs6D1tucGYKoA9boUNY5FOtMI",
+      authDomain: "rez-hub-technology.firebaseapp.com",
+      projectId: "rez-hub-technology",
+      storageBucket: "rez-hub-technology.firebasestorage.app",
+      messagingSenderId: "700283422991",
+      appId: "1:700283422991:web:4ccc543132a4d235d8167a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const content = document.getElementById("lessonsContent");
+    const status = document.getElementById("pageStatus");
+    const studentName = document.getElementById("studentName");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        studentName.textContent =
+          user.displayName || user.email || "Student";
+
+        content.hidden = false;
+        status.hidden = true;
+      } else {
+        window.location.replace("login.html");
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      logoutBtn.disabled = true;
+
+      try {
+        await signOut(auth);
+        window.location.replace("login.html");
+      } catch (error) {
+        status.hidden = false;
+        status.textContent = "Unable to log out. Please try again.";
+        logoutBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
