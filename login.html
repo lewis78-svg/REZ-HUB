@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login | REZ HUB</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-box {
+      max-width: 420px;
+      margin: 60px auto;
+      padding: 28px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px #0002;
+    }
+    .auth-box input, .auth-box button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      box-sizing: border-box;
+    }
+    .auth-box button {
+      background: #271119;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #message { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <main class="auth-box">
+    <h1>REZ HUB AND TECHNOLOGY</h1>
+    <h2>Student Account</h2>
+    <p>Create an account or log in to access lessons.</p>
+
+    <form id="authForm">
+      <input id="name" type="text"
+        placeholder="Your full name" autocomplete="name">
+
+      <input id="email" type="email"
+        placeholder="Email address" autocomplete="email" required>
+
+      <input id="password" type="password"
+        placeholder="Password (at least 6 characters)"
+        autocomplete="current-password" minlength="6" required>
+
+      <button type="submit" id="submitBtn">Log In</button>
+    </form>
+
+    <button type="button" id="toggleBtn">
+      Need an account? Register
+    </button>
+
+    <p id="message" role="status"></p>
+    <a href="index.html">Back to Home</a>
+  </main>
+
+  <script type="module" src="auth.js"></script>
+</body>
+</html>
